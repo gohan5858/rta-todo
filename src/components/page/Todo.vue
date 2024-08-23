@@ -1,0 +1,56 @@
+<script setup lang="ts">
+import RTATimer from "@base/RTATimer.vue";
+import TodoList from "@layout/TodoList.vue";
+import { nextTick, ref } from "vue";
+
+const title = ref("タイトル");
+const todoList = ref<
+  { title: string; lapTime: string; checkable: boolean; branchName?: string }[]
+>([]);
+const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
+const todoListArea = ref<HTMLElement>();
+
+const addTodo = async () => {
+  todoList.value?.push({
+    title: "タスク名",
+    lapTime: "--:--:--",
+    checkable:
+      todoList.value.length === 0 ||
+      todoList.value?.every((todo) => !todo.checkable),
+  });
+
+  // DOMの更新を待ってからスクロールする
+  await nextTick();
+  todoListArea.value?.scrollTo({
+    top: todoListArea.value.scrollHeight,
+    behavior: "smooth",
+  });
+};
+const goToNextTask = (index: number) => {
+  todoList.value[index].lapTime = rtaTimer?.value?.formattedTime || "--:--:--";
+  todoList.value[index].checkable = false;
+  todoList.value[index + 1] && (todoList.value[index + 1].checkable = true);
+};
+</script>
+
+<template>
+  <div class="grid grid-cols-1 grid-rows-[1fr_7fr_2fr] gap-2">
+    <input
+      type="text"
+      placeholder="Type here"
+      class="input input-bordered input-ghost w-full bg-base-300 text-center"
+      :value="title"
+    />
+    <div
+      ref="todoListArea"
+      class="flex flex-col gap-5 overflow-auto bg-base-300 p-2"
+    >
+      <TodoList
+        @checked-todo="(index) => goToNextTask(index)"
+        :todo-list="todoList"
+      />
+      <div class="btn btn-primary text-xl" @click="addTodo">+</div>
+    </div>
+    <RTATimer ref="rtaTimer" class="bg-base-300 p-2" />
+  </div>
+</template>
