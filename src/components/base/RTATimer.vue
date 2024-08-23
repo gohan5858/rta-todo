@@ -36,18 +36,12 @@ const reset = () => {
   elapsedTime.value = 0;
   isRunning.value = false;
 };
-const lap = () => {
-  emits("lapButtonClick", elapsedTime.value);
-};
 
 // 経過時間をフォーマットする関数
 const formattedTime = computed((): string => {
   return new Date(elapsedTime.value).toISOString().substring(11, 22);
 });
 
-const emits = defineEmits<{
-  lapButtonClick: [lappedElapsedTime: number];
-}>();
 onMounted(() => {
   start();
 });
@@ -56,19 +50,10 @@ onMounted(() => {
 <template>
   <div class="flex flex-col items-center justify-between">
     <div class="text-4xl">{{ formattedTime }}</div>
-    <div class="flex flex-row items-center justify-center gap-4">
-      <div class="flex flex-row gap-1">
-        <button class="btn btn-success btn-md w-14" @click="start">
-          Start
-        </button>
-        <button class="btn btn-secondary btn-md w-14" @click="stop">
-          Pause
-        </button>
-        <button class="btn btn-warning btn-md w-14" @click="reset">
-          Reset
-        </button>
-      </div>
-      <button class="btn btn-primary btn-md w-20" @click="lap">Lap</button>
+    <div class="flex flex-row items-center justify-center gap-3">
+      <button class="btn btn-primary btn-md" @click="start">Start</button>
+      <button class="btn btn-secondary btn-md" @click="stop">Pause</button>
+      <button class="btn btn-warning btn-md" @click="reset">Reset</button>
     </div>
   </div>
 </template>
