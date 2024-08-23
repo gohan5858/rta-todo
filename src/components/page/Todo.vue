@@ -52,7 +52,20 @@ const goToNextTask = (index: number) => {
         @checked-todo="(index) => goToNextTask(index)"
         :todo-list="todoList"
       />
-      <div class="btn btn-primary text-xl" @click="addTodo">+</div>
+      <div class="flex flex-row">
+        <div
+          class="btn flex-grow bg-orange-400 text-xl text-black hover:bg-orange-500"
+          @click="addTodo"
+        >
+          +
+        </div>
+        <div
+          class="btn flex-grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
+          @click="removeTodo"
+        >
+          -
+        </div>
+      </div>
     </div>
     <RTATimer ref="rtaTimer" class="bg-base-300 p-2" />
   </div>
