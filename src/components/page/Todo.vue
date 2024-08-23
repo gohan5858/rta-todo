@@ -26,6 +26,9 @@ const addTodo = async () => {
     behavior: "smooth",
   });
 };
+const removeTodo = () => {
+  todoList.value.pop();
+};
 const goToNextTask = (index: number) => {
   todoList.value[index].lapTime = rtaTimer?.value?.formattedTime || "--:--:--";
   todoList.value[index].checkable = false;
