@@ -45,6 +45,9 @@ const formattedTime = computed((): string => {
 onMounted(() => {
   start();
 });
+defineExpose({
+  formattedTime,
+});
 </script>
 
 <template>
