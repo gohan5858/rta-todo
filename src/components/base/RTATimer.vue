@@ -42,9 +42,6 @@ const formattedTime = computed((): string => {
   return new Date(elapsedTime.value).toISOString().substring(11, 22);
 });
 
-onMounted(() => {
-  start();
-});
 defineExpose({
   formattedTime,
 });
