@@ -5,7 +5,12 @@ import { nextTick, ref } from "vue";
 
 const title = ref("タイトル");
 const todoList = ref<
-  { title: string; lapTime: string; checkable: boolean; branchName?: string }[]
+  {
+    title: string;
+    lapTime: string;
+    checkable: boolean;
+    branchName?: string;
+  }[]
 >([]);
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
@@ -25,6 +30,12 @@ const addTodo = async () => {
     top: todoListArea.value.scrollHeight,
     behavior: "smooth",
   });
+};
+const removeTodo = () => {
+  // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
+  if (todoList.value.every((todo) => !todo.checkable)) return;
+
+  todoList.value.pop();
 };
 const goToNextTask = (index: number) => {
   todoList.value[index].lapTime = rtaTimer?.value?.formattedTime || "--:--:--";
@@ -49,7 +60,20 @@ const goToNextTask = (index: number) => {
         @checked-todo="(index) => goToNextTask(index)"
         :todo-list="todoList"
       />
-      <div class="btn btn-primary text-xl" @click="addTodo">+</div>
+      <div class="flex flex-row">
+        <div
+          class="btn flex-grow bg-orange-400 text-xl text-black hover:bg-orange-500"
+          @click="addTodo"
+        >
+          +
+        </div>
+        <div
+          class="btn flex-grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
+          @click="removeTodo"
+        >
+          -
+        </div>
+      </div>
     </div>
     <RTATimer ref="rtaTimer" class="bg-base-300 p-2" />
   </div>
