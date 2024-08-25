@@ -27,6 +27,9 @@ const addTodo = async () => {
   });
 };
 const removeTodo = () => {
+  // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
+  if (todoList.value.every((todo) => !todo.checkable)) return;
+
   todoList.value.pop();
 };
 const goToNextTask = (index: number) => {
