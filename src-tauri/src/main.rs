@@ -10,12 +10,6 @@ use tokio::time;
 static IS_PAUSED: LazyLock<Mutex<bool>> = LazyLock::new(|| Mutex::new(false));
 static CURRENT_TIME: LazyLock<Mutex<u32>> = LazyLock::new(|| Mutex::new(0));
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-#[specta::specta]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
 #[tauri::command]
 #[specta::specta]
 fn start_timer() {
@@ -68,7 +62,6 @@ fn main() {
     #[cfg(debug_assertions)]
     ts::export(
         collect_types![
-            greet,
             start_timer,
             pause_timer,
             resume_timer,
@@ -81,7 +74,6 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            greet,
             start_timer,
             pause_timer,
             resume_timer,
