@@ -5,7 +5,12 @@ import { nextTick, ref } from "vue";
 
 const title = ref("タイトル");
 const todoList = ref<
-  { title: string; lapTime: string; checkable: boolean; branchName?: string }[]
+  {
+    title: string;
+    lapTime: string;
+    checkable: boolean;
+    branchName?: string;
+  }[]
 >([]);
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
