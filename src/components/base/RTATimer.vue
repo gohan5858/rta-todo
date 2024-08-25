@@ -1,38 +1,53 @@
 <script setup lang="ts">
+import {
+  getCurrentTime,
+  pauseTimer,
+  resetTimer,
+  resumeTimer,
+  startTimer,
+} from "@/bindings";
 import { useIntervalFn } from "@vueuse/core";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
 // ストップウォッチの経過時間（ミリ秒）を保持する変数
 const elapsedTime = ref(0);
+const previousTime = ref(0);
 // ストップウォッチが動作中かどうかを管理する変数
 const isRunning = ref(false);
 
 // ストップウォッチを動かす関数
 const { pause, resume } = useIntervalFn(
-  () => {
-    elapsedTime.value += 10; // 10ミリ秒ごとに更新
+  async () => {
+    const currentTime = await getCurrentTime();
+    elapsedTime.value += currentTime - previousTime.value;
+    previousTime.value = currentTime;
   },
-  10,
+  1,
   { immediate: false },
 );
 
 // ストップウォッチを開始する関数
-const start = () => {
+const start = async () => {
   if (!isRunning.value) {
+    await startTimer();
+    await resumeTimer();
     resume();
     isRunning.value = true;
   }
 };
 // ストップウォッチを停止する関数
-const stop = () => {
+const stop = async () => {
   if (isRunning.value) {
+    await pauseTimer();
     pause();
     isRunning.value = false;
   }
 };
 // ストップウォッチをリセットする関数
-const reset = () => {
+const reset = async () => {
+  await resetTimer();
   pause();
+  previousTime.value = 0;
   elapsedTime.value = 0;
   isRunning.value = false;
 };

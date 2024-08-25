@@ -2218,6 +2218,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-specta",
+ "tokio",
 ]
 
 [[package]]
