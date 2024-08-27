@@ -7,7 +7,8 @@ const title = ref("タイトル");
 const todoList = ref<
   {
     title: string;
-    lapTime: string;
+    lapTime: Date | undefined;
+    elapsedTime: number | undefined;
     checkable: boolean;
     branchName?: string;
   }[]
@@ -18,7 +19,8 @@ const todoListArea = ref<HTMLElement>();
 const addTodo = async () => {
   todoList.value?.push({
     title: "タスク名",
-    lapTime: "--:--:--",
+    lapTime: undefined,
+    elapsedTime: undefined,
     checkable:
       todoList.value.length === 0 ||
       todoList.value?.every((todo) => !todo.checkable),
@@ -38,7 +40,14 @@ const removeTodo = () => {
   todoList.value.pop();
 };
 const goToNextTask = (index: number) => {
-  todoList.value[index].lapTime = rtaTimer?.value?.formattedTime || "--:--:--";
+  todoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
+
+  todoList.value[index].elapsedTime = Math.round(
+    ((todoList.value[index]?.lapTime?.getTime() || 0) -
+      (todoList.value[index - 1]?.lapTime?.getTime() || 0)) /
+      (1000 * 60),
+  );
+
   todoList.value[index].checkable = false;
   todoList.value[index + 1] && (todoList.value[index + 1].checkable = true);
 };

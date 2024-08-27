@@ -57,8 +57,12 @@ const formattedTime = computed((): string => {
   return new Date(elapsedTime.value).toISOString().substring(11, 22);
 });
 
+const getElapsedTime = () => {
+  return new Date(elapsedTime.value);
+};
+
 defineExpose({
-  formattedTime,
+  getElapsedTime,
 });
 </script>
 

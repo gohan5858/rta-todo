@@ -4,7 +4,8 @@ import TodoListItem from "@base/TodoListItem.vue";
 const props = defineProps<{
   todoList: {
     title: string;
-    lapTime: string;
+    lapTime: Date | undefined;
+    elapsedTime: number | undefined;
     checkable: boolean;
     branchName?: string;
   }[];
@@ -19,10 +20,11 @@ const emit = defineEmits<{
     <TodoListItem
       @checked-todo="emit('checkedTodo', index)"
       v-for="(
-        { title, lapTime, checkable, branchName }, index
+        { title, lapTime, elapsedTime, checkable, branchName }, index
       ) in props.todoList"
       :title="title"
-      :lap-time="lapTime"
+      :lap-time="lapTime?.toISOString().substring(11, 22) || '--:--:--.--'"
+      :elapsed-time="elapsedTime?.toString() || '--'"
       :branch-name="branchName"
       :checkable="checkable"
     />

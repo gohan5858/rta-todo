@@ -20,9 +20,10 @@
     "windows": [
       {
         "title": "rta-todo",
-        "width": 400,
-        "height": 600,
-        "resizable": false,
+        "minWidth": 400,
+        "minHeight": 400,
+        "width": 500,
+        "height": 700,
         "alwaysOnTop": true
       }
     ],
