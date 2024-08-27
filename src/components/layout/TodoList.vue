@@ -24,9 +24,6 @@ watch(
     uncheckedTodoItems.value.push(
       ...newTodoList.filter((todo) => !todo.checked),
     );
-
-    console.table(newTodoList.filter((todo) => todo.checked));
-    console.table(newTodoList.filter((todo) => !todo.checked));
   },
   { deep: true, immediate: true },
 );
