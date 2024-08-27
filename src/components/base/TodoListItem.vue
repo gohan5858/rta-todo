@@ -6,6 +6,7 @@ const checked = ref(false);
 const props = defineProps<{
   title: string;
   lapTime: string;
+  elapsedTime: string;
   checkable: boolean;
   branchName?: string;
 }>();
@@ -31,7 +32,9 @@ const emit = defineEmits<{
           class="input input-sm input-ghost w-2/4 flex-grow"
           :value="props.title"
         />
-        <div class="h-1/4 text-base">{{ props.lapTime }}</div>
+        <div class="h-1/4 whitespace-nowrap text-base">
+          {{ props.lapTime }} / {{ props.elapsedTime }} 分
+        </div>
       </div>
       <div class="flex justify-end">
         <input
