@@ -1,40 +1,92 @@
 <script setup lang="ts">
 import { TodoItem } from "@/todoItem";
+import TodoListItem from "@base/TodoListItem.vue";
+import { Ref, ref, watch } from "vue";
 import draggableComponent from "vuedraggable";
 
 const props = defineProps<{
   todoList: TodoItem[];
 }>();
 const emit = defineEmits<{
-  checkedTodo: [index: number];
+  checkedTodo: [index: number, checked: boolean];
 }>();
 
-const todoItems = ref(
-  props.todoList.map((todo, index) => ({ ...todo, index })),
-);
+const checkedTodoItems: Ref<TodoItem[]> = ref([]);
+const uncheckedTodoItems: Ref<TodoItem[]> = ref([]);
 
 watch(
   () => props.todoList,
   (newTodoList) => {
-    todoItems.value = newTodoList.map((todo, index) => ({ ...todo, index }));
+    checkedTodoItems.value.splice(0, checkedTodoItems.value.length);
+    uncheckedTodoItems.value.splice(0, uncheckedTodoItems.value.length);
+
+    checkedTodoItems.value.push(
+      ...newTodoList
+        .filter((todo) => todo.checked)
+        .map((todo, index) => ({
+          ...todo,
+          index,
+        })),
+    );
+    uncheckedTodoItems.value.push(
+      ...newTodoList
+        .filter((todo) => !todo.checked)
+        .map((todo, index) => ({
+          ...todo,
+          index: index + checkedTodoItems.value.length,
+        })),
+    );
+
+    console.table(
+      newTodoList
+        .filter((todo) => todo.checked)
+        .map((todo, index) => ({
+          ...todo,
+          index,
+        })),
+    );
+    console.table(
+      newTodoList
+        .filter((todo) => !todo.checked)
+        .map((todo, index) => ({
+          ...todo,
+          index: index + checkedTodoItems.value.length,
+        })),
+    );
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
-    <draggableComponent v-model="todoItems" item-key="index" tag="ul">
-      <template #item="{ element }">
+    <TodoListItem
+      v-for="checkedTodo in checkedTodoItems"
+      :todo-list="{
+        title: checkedTodo.title,
+        lapTime: checkedTodo.lapTime,
+        elapsedTime: checkedTodo.elapsedTime,
+        branchName: checkedTodo.branchName,
+        checked: checkedTodo.checked,
+        checkable: checkedTodo.checkable,
+      }"
+      :checked="checkedTodo.checked"
+    />
+    <draggableComponent v-model="uncheckedTodoItems" item-key="index" tag="ul">
+      <template #item="{ element: uncheckedTodo }">
         <TodoListItem
-          @checked-todo="emit('checkedTodo', element.index)"
-          :title="element.title"
-          :lap-time="
-            element.lapTime?.toISOString().substring(11, 22) || '--:--:--.--'
+          @checked-todo="
+            (checked) => emit('checkedTodo', uncheckedTodo.index, checked)
           "
-          :elapsed-time="element.elapsedTime?.toString() || '--'"
-          :branch-name="element.branchName"
-          :checkable="element.checkable"
+          :todo-list="{
+            title: uncheckedTodo.title,
+            lapTime: uncheckedTodo.lapTime,
+            elapsedTime: uncheckedTodo.elapsedTime,
+            branchName: uncheckedTodo.branchName,
+            checked: uncheckedTodo.checked,
+            checkable: uncheckedTodo.checkable,
+          }"
+          :checked="uncheckedTodo.checked"
         />
       </template>
     </draggableComponent>

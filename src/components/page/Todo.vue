@@ -14,6 +14,7 @@ const addTodo = async () => {
     title: "タスク名",
     lapTime: undefined,
     elapsedTime: undefined,
+    checked: false,
     checkable:
       todoList.value.length === 0 ||
       todoList.value?.every((todo) => !todo.checkable),
@@ -32,7 +33,7 @@ const removeTodo = () => {
 
   todoList.value.pop();
 };
-const goToNextTask = (index: number) => {
+const goToNextTask = (index: number, checked: boolean) => {
   todoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
 
   todoList.value[index].elapsedTime = Math.round(
@@ -41,6 +42,7 @@ const goToNextTask = (index: number) => {
       (1000 * 60),
   );
 
+  todoList.value[index].checked = checked;
   todoList.value[index].checkable = false;
   todoList.value[index + 1] && (todoList.value[index + 1].checkable = true);
 };
@@ -59,7 +61,7 @@ const goToNextTask = (index: number) => {
       class="flex flex-col gap-5 overflow-auto bg-base-300 p-2"
     >
       <TodoList
-        @checked-todo="(index) => goToNextTask(index)"
+        @checked-todo="(index, checked) => goToNextTask(index, checked)"
         :todo-list="todoList"
       />
       <div class="flex flex-row">
