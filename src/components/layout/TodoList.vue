@@ -20,39 +20,13 @@ watch(
     checkedTodoItems.value.splice(0, checkedTodoItems.value.length);
     uncheckedTodoItems.value.splice(0, uncheckedTodoItems.value.length);
 
-    checkedTodoItems.value.push(
-      ...newTodoList
-        .filter((todo) => todo.checked)
-        .map((todo, index) => ({
-          ...todo,
-          index,
-        })),
-    );
+    checkedTodoItems.value.push(...newTodoList.filter((todo) => todo.checked));
     uncheckedTodoItems.value.push(
-      ...newTodoList
-        .filter((todo) => !todo.checked)
-        .map((todo, index) => ({
-          ...todo,
-          index: index + checkedTodoItems.value.length,
-        })),
+      ...newTodoList.filter((todo) => !todo.checked),
     );
 
-    console.table(
-      newTodoList
-        .filter((todo) => todo.checked)
-        .map((todo, index) => ({
-          ...todo,
-          index,
-        })),
-    );
-    console.table(
-      newTodoList
-        .filter((todo) => !todo.checked)
-        .map((todo, index) => ({
-          ...todo,
-          index: index + checkedTodoItems.value.length,
-        })),
-    );
+    console.table(newTodoList.filter((todo) => todo.checked));
+    console.table(newTodoList.filter((todo) => !todo.checked));
   },
   { deep: true, immediate: true },
 );
