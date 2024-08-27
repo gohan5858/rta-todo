@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { TodoListItem } from "@/todoListItem";
+import { TodoItem } from "@/todoItem";
 import { ref } from "vue";
 
 const checked = ref(false);
 
 const props = defineProps<{
-  title: string;
-  lapTime: string;
-  elapsedTime: string;
-  checkable: boolean;
-  branchName?: string;
+  todoList: TodoItem;
 }>();
 const emit = defineEmits<{
   checkedTodo: [];

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { TodoListItem } from "@/todoListItem";
-import { ref, watch } from "vue";
+import { TodoItem } from "@/todoItem";
 import draggableComponent from "vuedraggable";
 
 const props = defineProps<{
-  todoList: TodoListItem[];
+  todoList: TodoItem[];
 }>();
 const emit = defineEmits<{
   checkedTodo: [index: number];

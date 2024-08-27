@@ -1,4 +1,4 @@
-export interface TodoListItem {
+export interface TodoItem {
   title: string;
   lapTime: Date | undefined;
   elapsedTime: number | undefined;
