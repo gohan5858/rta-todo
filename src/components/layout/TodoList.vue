@@ -2,7 +2,7 @@
 import { TodoItem } from "@/todoItem";
 import TodoListItem from "@base/TodoListItem.vue";
 import { Ref, ref, watch } from "vue";
-import draggableComponent from "vuedraggable";
+import draggable from "vuedraggable";
 
 const props = defineProps<{
   todoList: TodoItem[];
@@ -72,7 +72,7 @@ watch(
       }"
       :checked="checkedTodo.checked"
     />
-    <draggableComponent v-model="uncheckedTodoItems" item-key="index" tag="ul">
+    <draggable v-model="uncheckedTodoItems" item-key="index" tag="ul">
       <template #item="{ element: uncheckedTodo }">
         <TodoListItem
           @checked-todo="
@@ -89,6 +89,6 @@ watch(
           :checked="uncheckedTodo.checked"
         />
       </template>
-    </draggableComponent>
+    </draggable>
   </div>
 </template>
