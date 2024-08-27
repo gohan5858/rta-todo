@@ -2,7 +2,7 @@
 import { TodoItem } from "@/todoItem";
 import TodoListItem from "@base/TodoListItem.vue";
 import { Ref, ref, watch } from "vue";
-import draggable from "vuedraggable";
+import { VueDraggable } from "vue-draggable-plus";
 
 const props = defineProps<{
   todoList: TodoItem[];
@@ -72,23 +72,20 @@ watch(
       }"
       :checked="checkedTodo.checked"
     />
-    <draggable v-model="uncheckedTodoItems" item-key="index" tag="ul">
-      <template #item="{ element: uncheckedTodo }">
-        <TodoListItem
-          @checked-todo="
-            (checked) => emit('checkedTodo', uncheckedTodo.index, checked)
-          "
-          :todo-list="{
-            title: uncheckedTodo.title,
-            lapTime: uncheckedTodo.lapTime,
-            elapsedTime: uncheckedTodo.elapsedTime,
-            branchName: uncheckedTodo.branchName,
-            checked: uncheckedTodo.checked,
-            checkable: uncheckedTodo.checkable,
-          }"
-          :checked="uncheckedTodo.checked"
-        />
-      </template>
-    </draggable>
+    <VueDraggable ref="el" v-model="uncheckedTodoItems" :animation="150">
+      <TodoListItem
+        v-for="(uncheckedTodo, index) in uncheckedTodoItems"
+        @checked-todo="(checked) => emit('checkedTodo', index, checked)"
+        :todo-list="{
+          title: uncheckedTodo.title,
+          lapTime: uncheckedTodo.lapTime,
+          elapsedTime: uncheckedTodo.elapsedTime,
+          branchName: uncheckedTodo.branchName,
+          checked: uncheckedTodo.checked,
+          checkable: uncheckedTodo.checkable,
+        }"
+        :checked="uncheckedTodo.checked"
+      />
+    </VueDraggable>
   </div>
 </template>
