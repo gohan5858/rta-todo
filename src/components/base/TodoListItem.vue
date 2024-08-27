@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TodoListItem } from "@/todoListItem";
 import { ref } from "vue";
 
 const checked = ref(false);

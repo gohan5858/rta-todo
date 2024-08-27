@@ -1,18 +1,11 @@
 <script setup lang="ts">
+import { TodoListItem } from "@/todoListItem";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import { nextTick, ref } from "vue";
 
 const title = ref("タイトル");
-const todoList = ref<
-  {
-    title: string;
-    lapTime: Date | undefined;
-    elapsedTime: number | undefined;
-    checkable: boolean;
-    branchName?: string;
-  }[]
->([]);
+const todoList = ref<TodoListItem[]>([]);
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 

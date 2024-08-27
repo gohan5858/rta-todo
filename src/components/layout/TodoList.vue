@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import TodoListItem from "@base/TodoListItem.vue";
+import { TodoListItem } from "@/todoListItem";
 import { ref, watch } from "vue";
 import draggableComponent from "vuedraggable";
 
 const props = defineProps<{
-  todoList: {
-    title: string;
-    lapTime: Date | undefined;
-    elapsedTime: number | undefined;
-    checkable: boolean;
-    branchName?: string;
-  }[];
+  todoList: TodoListItem[];
 }>();
 const emit = defineEmits<{
   checkedTodo: [index: number];
