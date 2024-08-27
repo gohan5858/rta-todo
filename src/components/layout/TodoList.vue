@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import TodoListItem from "@base/TodoListItem.vue";
+import { ref, watch } from "vue";
+import draggableComponent from "vuedraggable";
 
 const props = defineProps<{
   todoList: {
@@ -13,20 +15,35 @@ const props = defineProps<{
 const emit = defineEmits<{
   checkedTodo: [index: number];
 }>();
+
+const todoItems = ref(
+  props.todoList.map((todo, index) => ({ ...todo, index })),
+);
+
+watch(
+  () => props.todoList,
+  (newTodoList) => {
+    todoItems.value = newTodoList.map((todo, index) => ({ ...todo, index }));
+  },
+  { deep: true },
+);
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
-    <TodoListItem
-      @checked-todo="emit('checkedTodo', index)"
-      v-for="(
-        { title, lapTime, elapsedTime, checkable, branchName }, index
-      ) in props.todoList"
-      :title="title"
-      :lap-time="lapTime?.toISOString().substring(11, 22) || '--:--:--.--'"
-      :elapsed-time="elapsedTime?.toString() || '--'"
-      :branch-name="branchName"
-      :checkable="checkable"
-    />
+    <draggableComponent v-model="todoItems" item-key="index" tag="ul">
+      <template #item="{ element }">
+        <TodoListItem
+          @checked-todo="emit('checkedTodo', element.index)"
+          :title="element.title"
+          :lap-time="
+            element.lapTime?.toISOString().substring(11, 22) || '--:--:--.--'
+          "
+          :elapsed-time="element.elapsedTime?.toString() || '--'"
+          :branch-name="element.branchName"
+          :checkable="element.checkable"
+        />
+      </template>
+    </draggableComponent>
   </div>
 </template>
