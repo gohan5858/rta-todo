@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import { TodoItem } from "@/todoItem";
-import { onMounted, ref } from "vue";
 
-const currentChecked = ref(false);
-const props = defineProps<{
-  todoList: TodoItem;
-  checked: boolean;
-}>();
+const todoListItem = defineModel<TodoItem>("todoListItem", {
+  required: true,
+});
 const emit = defineEmits<{
   checkedTodo: [checked: boolean];
 }>();
-
-onMounted(() => {
-  currentChecked.value = props.checked;
-});
 </script>
 
 <template>
@@ -22,31 +15,31 @@ onMounted(() => {
       <div class="flex flex-row items-center gap-2">
         <input
           type="checkbox"
-          :disabled="!props.todoList.checkable"
+          :disabled="!todoListItem?.checkable"
           class="checkbox-primary checkbox"
-          @change="emit('checkedTodo', currentChecked)"
-          v-model="currentChecked"
+          @change="emit('checkedTodo', todoListItem.checked)"
+          v-model="todoListItem.checked"
         />
         <input
           type="text"
           placeholder="Todo Title"
           class="input input-sm input-ghost w-2/4 flex-grow"
-          :value="props.todoList.title"
+          v-model="todoListItem.title"
         />
         <div class="h-1/4 whitespace-nowrap text-base">
           {{
-            props.todoList.lapTime?.toISOString().substring(11, 22) ||
+            todoListItem?.lapTime?.toISOString().substring(11, 22) ||
             "--:--:--.--"
           }}
-          / {{ props.todoList.elapsedTime?.toString() || "--" }} 分
+          / {{ todoListItem?.elapsedTime?.toString() || "--" }} 分
         </div>
       </div>
       <div class="flex justify-end">
         <input
-          v-if="props.todoList.branchName !== undefined"
+          v-if="todoListItem?.branchName !== undefined"
           type="text"
           class="input input-xs input-ghost w-48 text-right text-xs text-slate-400"
-          :value="props.todoList.branchName"
+          :value="todoListItem?.branchName"
         />
       </div>
     </div>
