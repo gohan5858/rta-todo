@@ -1,32 +1,32 @@
 <script setup lang="ts">
+import { TodoItem } from "@/todoItem";
 import TodoListItem from "@base/TodoListItem.vue";
+import { VueDraggable } from "vue-draggable-plus";
 
-const props = defineProps<{
-  todoList: {
-    title: string;
-    lapTime: Date | undefined;
-    elapsedTime: number | undefined;
-    checkable: boolean;
-    branchName?: string;
-  }[];
-}>();
 const emit = defineEmits<{
-  checkedTodo: [index: number];
+  checkedTodo: [index: number, checked: boolean];
 }>();
+
+const checkedTodoList = defineModel<TodoItem[]>("checkedTodoList", {
+  required: true,
+});
+const uncheckedTodoList = defineModel<TodoItem[]>("uncheckedTodoList", {
+  required: true,
+});
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
     <TodoListItem
-      @checked-todo="emit('checkedTodo', index)"
-      v-for="(
-        { title, lapTime, elapsedTime, checkable, branchName }, index
-      ) in props.todoList"
-      :title="title"
-      :lap-time="lapTime?.toISOString().substring(11, 22) || '--:--:--.--'"
-      :elapsed-time="elapsedTime?.toString() || '--'"
-      :branch-name="branchName"
-      :checkable="checkable"
+      v-for="(_, index) in checkedTodoList"
+      v-model:todo-list-item="checkedTodoList[index]"
     />
+    <VueDraggable ref="el" v-model="uncheckedTodoList" :animation="150">
+      <TodoListItem
+        v-for="(_, index) in uncheckedTodoList"
+        @checked-todo="(checked) => emit('checkedTodo', index, checked)"
+        v-model:todo-list-item="uncheckedTodoList[index]"
+      />
+    </VueDraggable>
   </div>
 </template>

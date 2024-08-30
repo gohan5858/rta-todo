@@ -1,29 +1,25 @@
 <script setup lang="ts">
+import { TodoItem } from "@/todoItem";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import { nextTick, ref } from "vue";
 
 const title = ref("タイトル");
-const todoList = ref<
-  {
-    title: string;
-    lapTime: Date | undefined;
-    elapsedTime: number | undefined;
-    checkable: boolean;
-    branchName?: string;
-  }[]
->([]);
+const checkedTodoList = ref<TodoItem[]>([]);
+const uncheckedTodoList = ref<TodoItem[]>([]);
+
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
 const addTodo = async () => {
-  todoList.value?.push({
+  uncheckedTodoList.value?.push({
     title: "タスク名",
     lapTime: undefined,
     elapsedTime: undefined,
+    checked: false,
     checkable:
-      todoList.value.length === 0 ||
-      todoList.value?.every((todo) => !todo.checkable),
+      uncheckedTodoList.value.length === 0 ||
+      uncheckedTodoList.value?.every((todo) => !todo.checkable),
   });
 
   // DOMの更新を待ってからスクロールする
@@ -35,21 +31,25 @@ const addTodo = async () => {
 };
 const removeTodo = () => {
   // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
-  if (todoList.value.every((todo) => !todo.checkable)) return;
-
-  todoList.value.pop();
+  if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
+  uncheckedTodoList.value.pop();
 };
-const goToNextTask = (index: number) => {
-  todoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
+const goToNextTask = (index: number, checked: boolean) => {
+  uncheckedTodoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
 
-  todoList.value[index].elapsedTime = Math.round(
-    ((todoList.value[index]?.lapTime?.getTime() || 0) -
-      (todoList.value[index - 1]?.lapTime?.getTime() || 0)) /
+  uncheckedTodoList.value[index].elapsedTime = Math.round(
+    ((uncheckedTodoList.value[index]?.lapTime?.getTime() || 0) -
+      (uncheckedTodoList.value[index - 1]?.lapTime?.getTime() || 0)) /
       (1000 * 60),
   );
 
-  todoList.value[index].checkable = false;
-  todoList.value[index + 1] && (todoList.value[index + 1].checkable = true);
+  uncheckedTodoList.value[index].checked = checked;
+  uncheckedTodoList.value[index].checkable = false;
+  uncheckedTodoList.value[index + 1] &&
+    (uncheckedTodoList.value[index + 1].checkable = true);
+
+  checkedTodoList.value.push(uncheckedTodoList.value[index]);
+  uncheckedTodoList.value.splice(index, 1);
 };
 </script>
 
@@ -66,8 +66,9 @@ const goToNextTask = (index: number) => {
       class="flex flex-col gap-5 overflow-auto bg-base-300 p-2"
     >
       <TodoList
-        @checked-todo="(index) => goToNextTask(index)"
-        :todo-list="todoList"
+        @checked-todo="(index, checked) => goToNextTask(index, checked)"
+        v-model:checked-todo-list="checkedTodoList"
+        v-model:unchecked-todo-list="uncheckedTodoList"
       />
       <div class="flex flex-row">
         <div
