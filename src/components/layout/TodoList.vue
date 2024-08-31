@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TodoItem } from "@/todoItem";
 import TodoListItem from "@base/TodoListItem.vue";
-import { VueDraggable } from "vue-draggable-plus";
+import { SortableEvent, VueDraggable } from "vue-draggable-plus";
 
 const emit = defineEmits<{
   checkedTodo: [index: number, checked: boolean];
@@ -13,6 +13,34 @@ const checkedTodoList = defineModel<TodoItem[]>("checkedTodoList", {
 const uncheckedTodoList = defineModel<TodoItem[]>("uncheckedTodoList", {
   required: true,
 });
+
+const onSortedTodoList = (e: SortableEvent) => {
+  if (
+    e.newIndex === undefined ||
+    e.oldIndex === undefined ||
+    uncheckedTodoList.value.length <= 1
+  ) {
+    return;
+  }
+
+  const dragItem = uncheckedTodoList.value.at(e.oldIndex);
+  if (!dragItem) {
+    return;
+  }
+
+  // チェック可能なtodoがドラッグされた場合
+  if (dragItem.checkable) {
+    dragItem.checkable = false;
+    const nextTop = uncheckedTodoList.value.at(1);
+    nextTop && (nextTop.checkable = true);
+  }
+  // チェック不可能なtodoが一番上にドラッグされた場合
+  else if (e.newIndex === 0) {
+    uncheckedTodoList.value.forEach((item) => (item.checkable = false));
+    const nextTop = uncheckedTodoList.value.at(e.oldIndex);
+    nextTop && (nextTop.checkable = true);
+  }
+};
 </script>
 
 <template>
@@ -21,7 +49,12 @@ const uncheckedTodoList = defineModel<TodoItem[]>("uncheckedTodoList", {
       v-for="(_, index) in checkedTodoList"
       v-model:todo-list-item="checkedTodoList[index]"
     />
-    <VueDraggable ref="el" v-model="uncheckedTodoList" :animation="150">
+    <VueDraggable
+      ref="el"
+      v-model="uncheckedTodoList"
+      :animation="150"
+      :onEnd="(e) => onSortedTodoList(e)"
+    >
       <TodoListItem
         v-for="(_, index) in uncheckedTodoList"
         @checked-todo="(checked) => emit('checkedTodo', index, checked)"
