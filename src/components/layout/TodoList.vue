@@ -15,16 +15,29 @@ const uncheckedTodoList = defineModel<TodoItem[]>("uncheckedTodoList", {
 });
 
 const onSortedTodoList = (e: SortableEvent) => {
-  if (e.oldIndex === undefined) {
+  if (
+    e.newIndex === undefined ||
+    e.oldIndex === undefined ||
+    uncheckedTodoList.value.length <= 1
+  ) {
     return;
   }
 
-  uncheckedTodoList.value.forEach((item) => (item.checkable = false));
-  if (e.newIndex === 0) {
-    const nextTop = uncheckedTodoList.value.at(e.oldIndex);
-    nextTop && (nextTop.checkable = true);
-  } else {
+  const dragItem = uncheckedTodoList.value.at(e.oldIndex);
+  if (!dragItem) {
+    return;
+  }
+
+  // チェック可能なtodoがドラッグされた場合
+  if (dragItem.checkable) {
+    dragItem.checkable = false;
     const nextTop = uncheckedTodoList.value.at(1);
+    nextTop && (nextTop.checkable = true);
+  }
+  // チェック不可能なtodoが一番上にドラッグされた場合
+  else if (e.newIndex === 0) {
+    uncheckedTodoList.value.forEach((item) => (item.checkable = false));
+    const nextTop = uncheckedTodoList.value.at(e.oldIndex);
     nextTop && (nextTop.checkable = true);
   }
 };
