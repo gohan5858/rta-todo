@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@phosphor-icons/vue": "^2.2.1",
     "@tauri-apps/api": "^1",
     "@vueuse/core": "^11.0.1",
     "vue": "^3.3.4",
