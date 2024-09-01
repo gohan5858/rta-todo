@@ -1,11 +1,12 @@
 // // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+mod save_data;
 
 use anyhow_tauri::TAResult;
+use save_data::SaveData;
 use specta::collect_types;
-use std::sync::LazyLock;
-use std::{sync::Mutex, time::Duration};
-use tauri::async_runtime::JoinHandle;
+use std::{path::Path, sync::{LazyLock, Mutex}, time::Duration};
+use tauri::{api::path::app_data_dir, async_runtime::JoinHandle};
 use tauri_specta::ts;
 use tokio::time;
 
@@ -93,6 +94,17 @@ fn get_current_time() -> TAResult<u32> {
     Ok(*current_time)
 }
 
+#[tauri::command]
+#[specta::specta]
+fn load_data(app: tauri::AppHandle) -> TAResult<SaveData> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let save_data = SaveData::load(Path::new(&path))?;
+
+    Ok(save_data)
+}
+
 // this example exports your types on startup when in debug mode or in a unit test. You can do whatever.
 fn main() {
     #[cfg(debug_assertions)]
@@ -102,7 +114,8 @@ fn main() {
             pause_timer,
             resume_timer,
             reset_timer,
-            get_current_time
+            get_current_time,
+            load_data
         ],
         "../src/bindings.ts",
     )
@@ -114,7 +127,8 @@ fn main() {
             pause_timer,
             resume_timer,
             reset_timer,
-            get_current_time
+            get_current_time,
+            load_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
