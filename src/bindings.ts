@@ -30,4 +30,10 @@ export function getCurrentTime() {
     return invoke()<number>("get_current_time")
 }
 
+export function loadData() {
+    return invoke()<SaveData>("load_data")
+}
 
+export type SaveData = { todoLists: TodoList[] }
+export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }
+export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }

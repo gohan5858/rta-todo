@@ -1,3 +1,4 @@
+import Home from "@page/Home.vue";
 import Todo from "@page/Todo.vue";
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from 'vue-router';
@@ -5,8 +6,8 @@ import App from "./App.vue";
 import "./assets/global.css";
 
 const routes = [
-  { path: '/', redirect: '/todo' },
-  { path: '/todo', name: 'todo', component: Todo },
+  { path: '/', name: 'home', component: Home },
+  { path: '/todo/:id', name: 'todo', component: Todo },
 ];
 const router = createRouter({
   history: createWebHashHistory(),
