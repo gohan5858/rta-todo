@@ -15,6 +15,8 @@ const { current } = useMagicKeys({
       currentKeys.value = Array.from(current).map((key) => {
         if (key === "meta") {
           return "⌘";
+        } else if (key === " ") {
+          return "SPACE";
         } else {
           return key.toUpperCase();
         }
