@@ -53,7 +53,7 @@ const stopTimerKey = ref(["SPACE"]);
         <h2 class="menu-title">ショートカット</h2>
         <ul>
           <li>
-            <KeySettingButton v-model="stopTimerKey" />
+            <KeySettingButton title="タイマー停止" v-model="stopTimerKey" />
           </li>
         </ul>
       </li>

@@ -4,6 +4,7 @@ import { ref } from "vue";
 
 const props = withDefaults(
   defineProps<{
+    title: string;
     /** キー組み合わせの最大数 */
     maxKeys?: number;
   }>(),
@@ -43,7 +44,7 @@ const { current } = useMagicKeys({
 
 <template>
   <div class="flex flex-row justify-between">
-    タイマー停止
+    {{ props.title }}
     <button
       class="btn btn-neutral"
       @click="
