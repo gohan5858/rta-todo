@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { os } from "@tauri-apps/api";
+import { OsType } from "@tauri-apps/api/os";
 import { useMagicKeys } from "@vueuse/core";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -18,6 +20,12 @@ const assignedKeys = defineModel<string[]>({ required: true });
 const currentKeys = ref<string[]>([]);
 const keyPopup = ref<HTMLDialogElement | null>(null);
 
+const osName = ref<OsType>("Darwin");
+
+onMounted(async () => {
+  osName.value = await os.type();
+});
+
 const { current } = useMagicKeys({
   onEventFired(e: KeyboardEvent) {
     // keyPopupが表示されていない場合はキー入力を受け付けない
@@ -27,7 +35,14 @@ const { current } = useMagicKeys({
     if (e.type === "keydown") {
       currentKeys.value = Array.from(current).map((key) => {
         if (key === "meta") {
-          return "⌘";
+          switch (osName.value) {
+            case "Darwin":
+              return "⌘";
+            case "Windows_NT":
+              return "WIN";
+            case "Linux":
+              return "SUPER";
+          }
         } else if (key === " ") {
           return "SPACE";
         } else {
