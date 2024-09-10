@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PhFaders } from "@phosphor-icons/vue";
+
 const displayCompleted = defineModel<boolean>({
   required: true,
 });
@@ -87,7 +89,13 @@ const displayCompleted = defineModel<boolean>({
       ></label>
       <ul class="menu min-h-full w-80 bg-base-200 p-4">
         <!-- Sidebar content here -->
-        <li><a>Sidebar Item 1</a></li>
+        <li>
+          <RouterLink :to="{ name: 'settings' }">
+            <div class="flex flex-row items-center gap-2 text-lg">
+              <PhFaders /> 設定
+            </div></RouterLink
+          >
+        </li>
         <li><a>Sidebar Item 2</a></li>
       </ul>
     </div>
