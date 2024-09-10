@@ -2,14 +2,26 @@
 import { useMagicKeys } from "@vueuse/core";
 import { ref } from "vue";
 
+const props = withDefaults(
+  defineProps<{
+    /** キー組み合わせの最大数 */
+    maxKeys?: number;
+  }>(),
+  {
+    maxKeys: 3,
+  },
+);
+
 const assignedKeys = defineModel<string[]>({ required: true });
+
 const currentKeys = ref<string[]>([]);
 const keyPopup = ref<HTMLDialogElement | null>(null);
 
 const { current } = useMagicKeys({
   onEventFired(e: KeyboardEvent) {
     // keyPopupが表示されていない場合はキー入力を受け付けない
-    if (!keyPopup.value?.open) return;
+    if (!keyPopup.value?.open || Array.from(current).length > props.maxKeys)
+      return;
 
     if (e.type === "keydown") {
       currentKeys.value = Array.from(current).map((key) => {
