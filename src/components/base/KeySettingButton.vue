@@ -2,8 +2,8 @@
 import { useMagicKeys } from "@vueuse/core";
 import { ref } from "vue";
 
+const assignedKeys = defineModel<string[]>({ required: true });
 const currentKeys = ref<string[]>([]);
-const assignedKeys = ref<string[]>([]);
 const keyPopup = ref<HTMLDialogElement | null>(null);
 
 const { current } = useMagicKeys({

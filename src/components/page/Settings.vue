@@ -3,7 +3,7 @@ import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
 import { ref } from "vue";
 
-const stopTimerKey = ref("");
+const stopTimerKey = ref(["SPACE"]);
 </script>
 
 <template>
