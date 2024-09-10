@@ -36,6 +36,7 @@ const { current } = useMagicKeys({
       });
     } else {
       assignedKeys.value = currentKeys.value;
+      currentKeys.value = [];
       keyPopup.value?.close();
     }
   },
