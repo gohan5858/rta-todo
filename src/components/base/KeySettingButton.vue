@@ -50,7 +50,26 @@ const { current } = useMagicKeys({
         }
       });
     } else {
-      assignedKeys.value = currentKeys.value;
+      // metaキー, Ctrl, shift, alt, space 他キーの順番でソート
+      assignedKeys.value = currentKeys.value.sort((a, b) => {
+        if (a === "⌘") return -1;
+        if (b === "⌘") return 1;
+        if (a === "Win") return -1;
+        if (b === "Win") return 1;
+        if (a === "Super") return -1;
+        if (b === "Super") return 1;
+        if (a === "CTRL") return -1;
+        if (b === "CTRL") return 1;
+        if (a === "SHIFT") return -1;
+        if (b === "SHIFT") return 1;
+        if (a === "SPACE") return -1;
+        if (b === "SPACE") return 1;
+        if (a === "ALT") return -1;
+        if (b === "ALT") return 1;
+        if (a === "SPACE") return -1;
+        if (b === "SPACE") return 1;
+        return a.localeCompare(b);
+      });
       currentKeys.value = [];
       keyPopup.value?.close();
     }
