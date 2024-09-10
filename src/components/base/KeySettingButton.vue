@@ -43,18 +43,19 @@ const { current } = useMagicKeys({
 </script>
 
 <template>
-  <div class="flex flex-row justify-between">
+  <div
+    class="flex flex-row justify-between"
+    @click="
+      () => {
+        keyPopup?.showModal();
+      }
+    "
+  >
     {{ props.title }}
-    <button
-      class="btn btn-neutral"
-      @click="
-        () => {
-          keyPopup?.showModal();
-        }
-      "
-    >
+    <div class="flex flex-row items-center gap-2">
       <kbd class="kbd" v-for="key in assignedKeys" :key="key">{{ key }}</kbd>
-    </button>
+    </div>
+
     <dialog class="modal" ref="keyPopup">
       <div class="modal-box">
         <h3 class="text-center text-lg font-bold">任意の組み合わせを入力</h3>
