@@ -34,6 +34,10 @@ export function loadData() {
     return invoke()<SaveData>("load_data")
 }
 
-export type SaveData = { todoLists: TodoList[] }
+export function setTheme(theme: string) {
+    return invoke()<null>("set_theme", { theme })
+}
+
 export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }
+export type SaveData = { theme: string; todoLists: TodoList[] }
 export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }

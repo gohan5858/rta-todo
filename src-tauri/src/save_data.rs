@@ -8,6 +8,7 @@ use anyhow_tauri::TAResult;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct SaveData {
+    pub theme: String,
     #[serde(rename = "todoLists")]
     todo_lists: Vec<TodoList>,
 }
@@ -44,6 +45,7 @@ impl SaveData {
 impl Default for SaveData {
     fn default() -> Self {
         Self {
+            theme: "nord".to_string(),
             todo_lists: Vec::new(),
         }
     }
