@@ -2,16 +2,11 @@
 import { loadData, SaveData, setTheme } from "@/bindings";
 import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
-const darkMode = ref(false);
+const data = ref<SaveData>(await loadData());
+const darkMode = ref(data.value.theme === "sunset");
 const stopTimerKey = ref(["SPACE"]);
-
-const data = ref<SaveData | null>(null);
-
-onMounted(async () => {
-  data.value = await loadData();
-});
 </script>
 
 <template>
