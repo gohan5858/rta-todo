@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { loadData, SaveData } from "@/bindings";
 import HomeNavbar from "@layout/HomeNavbar.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
-const saveData = ref<SaveData | null>(null);
+const saveData = ref<SaveData>(await loadData());
 const displayCompleted = ref(false);
 
 const todoLists = computed(() =>
@@ -13,10 +13,6 @@ const todoLists = computed(() =>
       displayCompleted.value ? todoList.completed : !todoList.completed,
     ),
 );
-
-onMounted(async () => {
-  saveData.value = await loadData();
-});
 </script>
 
 <template>
