@@ -1,5 +1,5 @@
 use std::{
-    fs::{create_dir_all, File},
+    fs::{create_dir_all, File, OpenOptions},
     io::BufReader,
     path::Path,
 };
@@ -17,14 +17,14 @@ impl SaveData {
             create_dir_all(app_data_dir).map_err(|e| anyhow::anyhow!(e))?;
         }
 
-        let file = match File::open(Path::new(app_data_dir).join("save_data.json")) {
-            Ok(file) => file,
-            Err(_) => {
-                let file = File::create(Path::new(app_data_dir).join("save_data.json"))
-                    .map_err(|e| anyhow::anyhow!(e))?;
-                file
-            }
-        };
+        let file_path = Path::new(app_data_dir).join("save_data.json");
+
+        let file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true) // 上書き
+            .open(&file_path)
+            .map_err(|e| anyhow::anyhow!(e))?;
 
         serde_json::to_writer(&file, &save_data).map_err(|e| anyhow::anyhow!(e))?;
         Ok(file)
