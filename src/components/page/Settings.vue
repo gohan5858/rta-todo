@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { loadData, SaveData, setTheme } from "@/bindings";
 import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
+const darkMode = ref(false);
 const stopTimerKey = ref(["SPACE"]);
+
+const data = ref<SaveData | null>(null);
+
+onMounted(async () => {
+  data.value = await loadData();
+});
 </script>
 
 <template>
@@ -24,10 +32,19 @@ const stopTimerKey = ref(["SPACE"]);
           </li>
           <li>
             <div class="flex flex-row justify-between">
-              テーマ
-              <select class="select select-ghost select-sm w-32">
-                <option>sunset</option>
-              </select>
+              ダークモード
+              <input
+                type="checkbox"
+                v-model="darkMode"
+                class="toggle"
+                @change="
+                  async () => {
+                    const theme = darkMode ? 'sunset' : 'nord';
+                    await setTheme(theme).catch(console.error);
+                    data = await loadData();
+                  }
+                "
+              />
             </div>
           </li>
         </ul>
