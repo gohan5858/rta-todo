@@ -9,6 +9,7 @@ const route = useRoute();
 const theme = ref<string | null>(null);
 
 onMounted(async () => {
+  theme.value = (await loadData()).theme;
   listen("update-setting", async (_event) => {
     theme.value = (await loadData()).theme;
   });
