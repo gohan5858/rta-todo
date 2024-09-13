@@ -18,7 +18,7 @@ const isNotificationExceededGoalLapTime = ref(
   data.value.isNotificationExceededGoalLapTime,
 );
 const darkMode = ref(data.value.theme === "sunset");
-const stopTimerKey = ref(["SPACE"]);
+const playPauseKey = ref(["SPACE"]);
 </script>
 
 <template>
@@ -113,7 +113,7 @@ const stopTimerKey = ref(["SPACE"]);
         <h2 class="menu-title">ショートカット</h2>
         <ul>
           <li>
-            <KeySettingButton title="タイマー停止" v-model="stopTimerKey" />
+            <KeySettingButton title="再生停止" v-model="playPauseKey" />
           </li>
         </ul>
       </li>
