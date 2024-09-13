@@ -38,6 +38,10 @@ export function setTheme(theme: string) {
     return invoke()<null>("set_theme", { theme })
 }
 
-export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }
-export type SaveData = { theme: string; todoLists: TodoList[] }
+export function setIsAutoStart(isAutoStart: boolean) {
+    return invoke()<null>("set_is_auto_start", { isAutoStart })
+}
+
+export type SaveData = { theme: string; isAutoStart: boolean; todoLists: TodoList[] }
 export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }
+export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }

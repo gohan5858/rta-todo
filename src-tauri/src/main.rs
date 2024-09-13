@@ -19,6 +19,7 @@ fn main() {
             get_current_time,
             load_data,
             set_theme,
+            set_is_auto_start,
         ],
         "../src/bindings.ts",
     )
@@ -33,6 +34,7 @@ fn main() {
             get_current_time,
             load_data,
             set_theme,
+            set_is_auto_start,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
