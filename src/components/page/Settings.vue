@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { loadData, SaveData, setTheme } from "@/bindings";
+import { loadData, SaveData, setIsAutoStart, setTheme } from "@/bindings";
 import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
 import { ref } from "vue";
 
 const data = ref<SaveData>(await loadData());
+const isAutoStart = ref(data.value.isAutoStart);
 const darkMode = ref(data.value.theme === "sunset");
 const stopTimerKey = ref(["SPACE"]);
 </script>
@@ -18,11 +19,18 @@ const stopTimerKey = ref(["SPACE"]);
         <ul>
           <li>
             <div class="flex flex-row justify-between">
-              言語設定
-              <select class="select select-ghost select-sm w-32">
-                <option value="ja">日本語</option>
-                <option value="en">English</option>
-              </select>
+              自動起動
+              <input
+                type="checkbox"
+                v-model="isAutoStart"
+                class="toggle"
+                @change="
+                  async () => {
+                    await setIsAutoStart(isAutoStart).catch(console.error);
+                    data = await loadData();
+                  }
+                "
+              />
             </div>
           </li>
           <li>
