@@ -13,6 +13,8 @@ pub struct SaveData {
     pub is_auto_start: bool,
     #[serde(rename = "isNotificationOfDeadline")]
     pub is_notification_of_deadline: bool,
+    #[serde(rename = "isNotificationExceededGoalLapTime")]
+    pub is_notification_exceeded_goal_lap_time: bool,
     #[serde(rename = "todoLists")]
     todo_lists: Vec<TodoList>,
 }
@@ -51,6 +53,7 @@ impl Default for SaveData {
         Self {
             is_auto_start: false,
             is_notification_of_deadline: false,
+            is_notification_exceeded_goal_lap_time: false,
             theme: "nord".to_string(),
             todo_lists: Vec::new(),
         }

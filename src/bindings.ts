@@ -46,6 +46,10 @@ export function setIsNotificationOfDeadline(isNotificationOfDeadline: boolean) {
     return invoke()<null>("set_is_notification_of_deadline", { isNotificationOfDeadline })
 }
 
-export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }
-export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; todoLists: TodoList[] }
+export function setIsNotificationExceededGoalLapTime(isNotificationExceededGoalLapTime: boolean) {
+    return invoke()<null>("set_is_notification_exceeded_goal_lap_time", { isNotificationExceededGoalLapTime })
+}
+
 export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }
+export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }
+export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; todoLists: TodoList[] }

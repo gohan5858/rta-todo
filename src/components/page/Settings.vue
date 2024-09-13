@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { loadData, SaveData, setIsAutoStart, setIsNotificationOfDeadline, setTheme } from "@/bindings";
+import {
+  loadData,
+  SaveData,
+  setIsAutoStart,
+  setIsNotificationExceededGoalLapTime,
+  setIsNotificationOfDeadline,
+  setTheme,
+} from "@/bindings";
 import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
 import { ref } from "vue";
@@ -7,6 +14,9 @@ import { ref } from "vue";
 const data = ref<SaveData>(await loadData());
 const isAutoStart = ref(data.value.isAutoStart);
 const isNotificationOfDeadline = ref(data.value.isNotificationOfDeadline);
+const isNotificationExceededGoalLapTime = ref(
+  data.value.isNotificationExceededGoalLapTime,
+);
 const darkMode = ref(data.value.theme === "sunset");
 const stopTimerKey = ref(["SPACE"]);
 </script>
@@ -67,16 +77,34 @@ const stopTimerKey = ref(["SPACE"]);
                 @change="
                   async () => {
                     data.isNotificationOfDeadline = isNotificationOfDeadline;
-                    await setIsNotificationOfDeadline(isNotificationOfDeadline).catch(console.error);
+                    await setIsNotificationOfDeadline(
+                      isNotificationOfDeadline,
+                    ).catch(console.error);
                     data = await loadData();
-                  }"
+                  }
+                "
               />
             </div>
           </li>
           <li>
             <div class="flex flex-row justify-between">
               目標ラップタイムを過ぎたら通知
-              <input type="checkbox" class="toggle" checked="true" />
+              <input
+                v-model="isNotificationExceededGoalLapTime"
+                type="checkbox"
+                class="toggle"
+                checked="true"
+                @change="
+                  async () => {
+                    data.isNotificationExceededGoalLapTime =
+                      isNotificationExceededGoalLapTime;
+                    await setIsNotificationExceededGoalLapTime(
+                      isNotificationExceededGoalLapTime,
+                    ).catch(console.error);
+                    data = await loadData();
+                  }
+                "
+              />
             </div>
           </li>
         </ul>
