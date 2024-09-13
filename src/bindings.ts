@@ -42,6 +42,10 @@ export function setIsAutoStart(isAutoStart: boolean) {
     return invoke()<null>("set_is_auto_start", { isAutoStart })
 }
 
-export type SaveData = { theme: string; isAutoStart: boolean; todoLists: TodoList[] }
+export function setIsNotificationOfDeadline(isNotificationOfDeadline: boolean) {
+    return invoke()<null>("set_is_notification_of_deadline", { isNotificationOfDeadline })
+}
+
 export type TodoList = { id: number; title: string; completed: boolean; todos: Todo[] }
+export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; todoLists: TodoList[] }
 export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }

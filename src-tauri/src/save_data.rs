@@ -11,6 +11,8 @@ pub struct SaveData {
     pub theme: String,
     #[serde(rename = "isAutoStart")]
     pub is_auto_start: bool,
+    #[serde(rename = "isNotificationOfDeadline")]
+    pub is_notification_of_deadline: bool,
     #[serde(rename = "todoLists")]
     todo_lists: Vec<TodoList>,
 }
@@ -48,6 +50,7 @@ impl Default for SaveData {
     fn default() -> Self {
         Self {
             is_auto_start: false,
+            is_notification_of_deadline: false,
             theme: "nord".to_string(),
             todo_lists: Vec::new(),
         }
