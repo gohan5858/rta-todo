@@ -19,6 +19,7 @@ const isNotificationExceededGoalLapTime = ref(
 );
 const darkMode = ref(data.value.theme === "sunset");
 const playPauseKey = ref(["SPACE"]);
+const nextTaskKey = ref(["N"]);
 </script>
 
 <template>
@@ -114,6 +115,7 @@ const playPauseKey = ref(["SPACE"]);
         <ul>
           <li>
             <KeySettingButton title="再生停止" v-model="playPauseKey" />
+            <KeySettingButton title="次のタスクへ進む" v-model="nextTaskKey" />
           </li>
         </ul>
       </li>
