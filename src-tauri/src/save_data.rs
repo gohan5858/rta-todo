@@ -1,5 +1,5 @@
 use std::{
-    fs::{create_dir_all, File},
+    fs::{create_dir_all, File, OpenOptions},
     io::BufReader,
     path::Path,
 };
@@ -8,6 +8,13 @@ use anyhow_tauri::TAResult;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct SaveData {
+    pub theme: String,
+    #[serde(rename = "isAutoStart")]
+    pub is_auto_start: bool,
+    #[serde(rename = "isNotificationOfDeadline")]
+    pub is_notification_of_deadline: bool,
+    #[serde(rename = "isNotificationExceededGoalLapTime")]
+    pub is_notification_exceeded_goal_lap_time: bool,
     #[serde(rename = "todoLists")]
     todo_lists: Vec<TodoList>,
 }
@@ -17,14 +24,14 @@ impl SaveData {
             create_dir_all(app_data_dir).map_err(|e| anyhow::anyhow!(e))?;
         }
 
-        let file = match File::open(Path::new(app_data_dir).join("save_data.json")) {
-            Ok(file) => file,
-            Err(_) => {
-                let file = File::create(Path::new(app_data_dir).join("save_data.json"))
-                    .map_err(|e| anyhow::anyhow!(e))?;
-                file
-            }
-        };
+        let file_path = Path::new(app_data_dir).join("save_data.json");
+
+        let file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true) // 上書き
+            .open(&file_path)
+            .map_err(|e| anyhow::anyhow!(e))?;
 
         serde_json::to_writer(&file, &save_data).map_err(|e| anyhow::anyhow!(e))?;
         Ok(file)
@@ -44,6 +51,10 @@ impl SaveData {
 impl Default for SaveData {
     fn default() -> Self {
         Self {
+            is_auto_start: false,
+            is_notification_of_deadline: false,
+            is_notification_exceeded_goal_lap_time: false,
+            theme: "nord".to_string(),
             todo_lists: Vec::new(),
         }
     }
