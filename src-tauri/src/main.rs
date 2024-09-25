@@ -22,6 +22,7 @@ fn main() {
             set_is_auto_start,
             set_is_notification_of_deadline,
             set_is_notification_exceeded_goal_lap_time,
+            add_project,
         ],
         "../src/bindings.ts",
     )
@@ -39,6 +40,7 @@ fn main() {
             set_is_auto_start,
             set_is_notification_of_deadline,
             set_is_notification_exceeded_goal_lap_time,
+            add_project,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
