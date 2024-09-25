@@ -66,6 +66,7 @@ pub(crate) struct Project {
     // HACK: 本来はOption<chrono::DateTime<chrono::Utc>> にしたいが、specta::Type が対応していないため、Option<String> にしている
     pub deadline: Option<String>,
     pub completed: bool,
+    #[serde(rename = "todoList")]
     pub todo_list: Vec<Todo>,
 }
 
