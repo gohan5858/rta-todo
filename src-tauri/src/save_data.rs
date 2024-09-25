@@ -64,7 +64,7 @@ pub(crate) struct Project {
     pub id: i32,
     pub title: String,
     pub completed: bool,
-    pub todos: Vec<Todo>,
+    pub todo_list: Vec<Todo>,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
