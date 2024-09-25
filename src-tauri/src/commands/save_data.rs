@@ -78,11 +78,17 @@ pub fn set_is_notification_exceeded_goal_lap_time(
 
 #[tauri::command]
 #[specta::specta]
-pub fn add_project(app: tauri::AppHandle, new_project: Project) -> TAResult<()> {
+pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String>) -> TAResult<()> {
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
         .ok_or(anyhow::anyhow!("Failed to get path"))?;
     let mut save_data = SaveData::load(Path::new(&path))?;
-    save_data.projects.push(new_project);
+    save_data.projects.push(Project {
+        id: uuid::Uuid::now_v7(),
+        title,
+        deadline,
+        completed: false,
+        todo_list: Vec::new(),
+    });
     Ok(())
 }

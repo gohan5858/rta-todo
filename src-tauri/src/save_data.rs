@@ -61,7 +61,7 @@ impl Default for SaveData {
 }
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub(crate) struct Project {
-    pub id: i32,
+    pub id: uuid::Uuid,
     pub title: String,
     // HACK: 本来はOption<chrono::DateTime<chrono::Utc>> にしたいが、specta::Type が対応していないため、Option<String> にしている
     pub deadline: Option<String>,
