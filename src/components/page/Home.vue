@@ -6,11 +6,11 @@ import { computed, ref } from "vue";
 const saveData = ref<SaveData>(await loadData());
 const displayCompleted = ref(false);
 
-const todoLists = computed(() =>
-  saveData.value?.todoLists
+const projects = computed(() =>
+  saveData.value?.projects
     .reverse()
-    .filter((todoList) =>
-      displayCompleted.value ? todoList.completed : !todoList.completed,
+    .filter((project) =>
+      displayCompleted.value ? project.completed : !project.completed,
     ),
 );
 </script>
@@ -24,15 +24,15 @@ const todoLists = computed(() =>
           <div class="flex flex-col gap-2">
             <RouterLink
               class="flex"
-              v-for="todoList in todoLists"
-              :key="todoList.id"
+              v-for="project in projects"
+              :key="project.id"
               :to="{
                 name: 'todo',
-                params: { id: todoList.id },
+                params: { id: project.id },
               }"
             >
               <div class="btn flex-grow text-xl">
-                {{ todoList.title }}
+                {{ project.title }}
               </div>
             </RouterLink>
           </div>

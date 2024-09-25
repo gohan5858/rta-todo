@@ -15,8 +15,8 @@ pub struct SaveData {
     pub is_notification_of_deadline: bool,
     #[serde(rename = "isNotificationExceededGoalLapTime")]
     pub is_notification_exceeded_goal_lap_time: bool,
-    #[serde(rename = "todoLists")]
-    todo_lists: Vec<TodoList>,
+    #[serde(rename = "projects")]
+    pub projects: Vec<Project>,
 }
 impl SaveData {
     pub fn save(save_data: SaveData, app_data_dir: &Path) -> TAResult<File> {
@@ -55,12 +55,12 @@ impl Default for SaveData {
             is_notification_of_deadline: false,
             is_notification_exceeded_goal_lap_time: false,
             theme: "nord".to_string(),
-            todo_lists: Vec::new(),
+            projects: Vec::new(),
         }
     }
 }
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
-struct TodoList {
+pub(crate) struct Project {
     pub id: i32,
     pub title: String,
     pub completed: bool,
@@ -68,7 +68,7 @@ struct TodoList {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
-struct Todo {
+pub(crate) struct Todo {
     pub id: i32,
     pub lap_time: Option<i32>,
     pub elapsed_time: Option<i32>,
