@@ -63,6 +63,8 @@ impl Default for SaveData {
 pub(crate) struct Project {
     pub id: i32,
     pub title: String,
+    // HACK: 本来はOption<chrono::DateTime<chrono::Utc>> にしたいが、specta::Type が対応していないため、Option<String> にしている
+    pub deadline: Option<String>,
     pub completed: bool,
     pub todo_list: Vec<Todo>,
 }
