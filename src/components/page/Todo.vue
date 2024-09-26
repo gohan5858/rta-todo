@@ -11,7 +11,7 @@ const uncheckedTodoList = ref<TodoItem[]>([]);
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
-const addTodo = async () => {
+const addTodoItem = async () => {
   uncheckedTodoList.value?.push({
     title: "タスク名",
     lapTime: undefined,
@@ -73,7 +73,7 @@ const goToNextTask = (index: number, checked: boolean) => {
       <div class="flex flex-row">
         <div
           class="btn flex-grow bg-orange-400 text-xl text-black hover:bg-orange-500"
-          @click="addTodo"
+          @click="addTodoItem"
         >
           +
         </div>
