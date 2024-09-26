@@ -90,5 +90,6 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
         completed: false,
         todo_list: Vec::new(),
     });
+    SaveData::save(save_data, Path::new(&path))?;
     Ok(())
 }
