@@ -2242,6 +2242,7 @@ dependencies = [
  "tauri-build",
  "tauri-specta",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -2545,6 +2546,7 @@ dependencies = [
  "specta-macros",
  "tauri",
  "thiserror",
+ "uuid",
 ]
 
 [[package]]
@@ -3263,6 +3265,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "81dfa00651efa65069b0b6b651f4aaa31ba9e3c3ce0137aaad053604ee7e0314"
 dependencies = [
  "getrandom 0.2.15",
+ "serde",
 ]
 
 [[package]]
