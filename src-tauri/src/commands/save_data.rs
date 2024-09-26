@@ -112,7 +112,7 @@ pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) ->
         lap_time: None,
         elapsed_time: None,
         checked: false,
-        checkable: true,
+        checkable: project.todo_list.len() == 0 || project.todo_list.iter().all(|t| !t.checkable),
         branch_name: None,
     });
     SaveData::save(save_data, Path::new(&path))?;
