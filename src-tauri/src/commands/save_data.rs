@@ -96,7 +96,7 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
 
 #[tauri::command]
 #[specta::specta]
-pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) -> TAResult<()> {
+pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) -> TAResult<Project> {
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
         .ok_or(anyhow::anyhow!("Failed to get path"))?;
@@ -115,6 +115,7 @@ pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) ->
         checkable: project.todo_list.len() == 0 || project.todo_list.iter().all(|t| !t.checkable),
         branch_name: None,
     });
+    let project = project.clone();
     SaveData::save(save_data, Path::new(&path))?;
-    Ok(())
+    Ok(project)
 }
