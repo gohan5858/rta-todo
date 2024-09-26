@@ -14,6 +14,8 @@ const projects = computed(() =>
     ),
 );
 const newTodoPopup = ref<HTMLDialogElement | null>(null);
+const alertPopup = ref<HTMLDialogElement | null>(null);
+
 const title = "";
 const now = new Date();
 const deadline_date = now.toISOString().split("T")[0];
@@ -105,6 +107,11 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
               class="btn btn-primary"
               @click="
                 async () => {
+                  if (!title) {
+                    alertPopup?.showModal();
+                    return;
+                  }
+
                   await addProject(title, deadline_date + ' ' + deadline_time);
                   title = '';
                   saveData = await loadData();
@@ -116,6 +123,15 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
             </button>
           </div>
         </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+    <dialog class="modal" ref="alertPopup">
+      <div class="modal-box text-center">
+        <h3 class="text-center text-lg font-bold text-red-500">入力エラー</h3>
+        <p>タイトルを入力してください。</p>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
