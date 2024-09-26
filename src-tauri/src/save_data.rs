@@ -72,7 +72,7 @@ pub(crate) struct Project {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub(crate) struct Todo {
-    pub id: i32,
+    pub id: uuid::Uuid,
     pub lap_time: Option<i32>,
     pub elapsed_time: Option<i32>,
     pub checked: bool,
