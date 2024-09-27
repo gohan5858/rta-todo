@@ -55,7 +55,7 @@ export function addProject(title: string, deadline: string | null) {
 }
 
 export function addTodo(projectId: string, title: string) {
-    return invoke()<Project>("add_todo", { projectId,title })
+    return invoke()<Todo>("add_todo", { projectId,title })
 }
 
 export type Project = { id: string; title: string; deadline: string | null; completed: boolean; todoList: Todo[] }
