@@ -74,9 +74,12 @@ pub(crate) struct Project {
 pub(crate) struct Todo {
     pub id: uuid::Uuid,
     pub title: String,
+    #[serde(rename = "lapTime")]
     pub lap_time: Option<i32>,
+    #[serde(rename = "elapsedTime")]
     pub elapsed_time: Option<i32>,
     pub checked: bool,
     pub checkable: bool,
+    #[serde(rename = "branchName")]
     pub branch_name: Option<String>,
 }
