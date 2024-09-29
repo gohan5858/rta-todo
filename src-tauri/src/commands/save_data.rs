@@ -78,11 +78,10 @@ pub fn set_is_notification_exceeded_goal_lap_time(
 
 #[tauri::command]
 #[specta::specta]
-pub fn add_project(
-    app: tauri::AppHandle,
-    title: String,
-    deadline: Option<chrono::DateTime<chrono::Utc>>,
-) -> TAResult<()> {
+pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String>) -> TAResult<()> {
+    let deadline = deadline
+        .and_then(|d| chrono::DateTime::parse_from_str(&d, "%Y-%m-%d %H:%M").ok())
+        .map(|dt| dt.with_timezone(&chrono::Utc));
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
         .ok_or(anyhow::anyhow!("Failed to get path"))?;
