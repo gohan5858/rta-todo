@@ -99,6 +99,21 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
 
 #[tauri::command]
 #[specta::specta]
+pub fn fetch_project(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<Project> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let save_data = SaveData::load(Path::new(&path))?;
+    let project = save_data
+        .projects
+        .iter()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+    Ok(project.clone())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn add_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,

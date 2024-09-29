@@ -54,6 +54,10 @@ export function addProject(title: string, deadline: string | null) {
     return invoke()<null>("add_project", { title,deadline })
 }
 
+export function fetchProject(projectId: string) {
+    return invoke()<Project>("fetch_project", { projectId })
+}
+
 export function addTodo(projectId: string, title: string) {
     return invoke()<[Todo[], Todo[]]>("add_todo", { projectId,title })
 }

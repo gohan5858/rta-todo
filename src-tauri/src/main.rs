@@ -23,6 +23,7 @@ fn main() {
             set_is_notification_of_deadline,
             set_is_notification_exceeded_goal_lap_time,
             add_project,
+            fetch_project,
             add_todo,
             go_to_next_todo,
         ],
@@ -43,6 +44,7 @@ fn main() {
             set_is_notification_of_deadline,
             set_is_notification_exceeded_goal_lap_time,
             add_project,
+            fetch_project,
             add_todo,
             go_to_next_todo,
         ])

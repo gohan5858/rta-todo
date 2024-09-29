@@ -1,16 +1,28 @@
 <script setup lang="ts">
-import { addTodo, goToNextTodo, Todo } from "@/bindings";
+import { addTodo, fetchProject, goToNextTodo, Todo } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
-import { nextTick, ref } from "vue";
+import { nextTick, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const projectId = route.params.projectId as string;
 
-const title = ref("タイトル");
-const checkedTodoList = ref<Todo[]>([]);
-const uncheckedTodoList = ref<Todo[]>([]);
+const project = await fetchProject(projectId);
+
+const title = ref(project.title);
+
+const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
+  ([unchecked, checked], todo) => {
+    if (todo.checked) {
+      unchecked.value.push(todo);
+    } else {
+      checked.value.push(todo);
+    }
+    return [unchecked, checked];
+  },
+  [ref([]), ref([])] as [Ref<Todo[]>, Ref<Todo[]>],
+);
 
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
