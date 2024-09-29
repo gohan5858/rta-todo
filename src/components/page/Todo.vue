@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import { TodoItem } from "@/todoItem";
+import { addTodo, goToNextTodo, Todo } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import { nextTick, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const projectId = route.params.projectId as string;
 
 const title = ref("タイトル");
-const checkedTodoList = ref<TodoItem[]>([]);
-const uncheckedTodoList = ref<TodoItem[]>([]);
+const checkedTodoList = ref<Todo[]>([]);
+const uncheckedTodoList = ref<Todo[]>([]);
 
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
 const addTodoItem = async () => {
-  uncheckedTodoList.value?.push({
-    title: "タスク名",
-    lapTime: undefined,
-    elapsedTime: undefined,
-    checked: false,
-    checkable:
-      uncheckedTodoList.value.length === 0 ||
-      uncheckedTodoList.value?.every((todo) => !todo.checkable),
-  });
+  [uncheckedTodoList.value, checkedTodoList.value] = await addTodo(
+    projectId,
+    "新しいタスク",
+  );
 
   // DOMの更新を待ってからスクロールする
   await nextTick();
@@ -34,22 +33,12 @@ const removeTodo = () => {
   if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
   uncheckedTodoList.value.pop();
 };
-const goToNextTask = (index: number, checked: boolean) => {
-  uncheckedTodoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
-
-  uncheckedTodoList.value[index].elapsedTime = Math.round(
-    ((uncheckedTodoList.value[index]?.lapTime?.getTime() || 0) -
-      (uncheckedTodoList.value[index - 1]?.lapTime?.getTime() || 0)) /
-      (1000 * 60),
+const goToNextTask = async (index: number, checked: boolean) => {
+  [uncheckedTodoList.value, checkedTodoList.value] = await goToNextTodo(
+    projectId,
+    index,
+    checked,
   );
-
-  uncheckedTodoList.value[index].checked = checked;
-  uncheckedTodoList.value[index].checkable = false;
-  uncheckedTodoList.value[index + 1] &&
-    (uncheckedTodoList.value[index + 1].checkable = true);
-
-  checkedTodoList.value.push(uncheckedTodoList.value[index]);
-  uncheckedTodoList.value.splice(index, 1);
 };
 </script>
 

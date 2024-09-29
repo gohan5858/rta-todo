@@ -131,6 +131,52 @@ pub fn add_todo(
     SaveData::save(save_data, Path::new(&path))?;
     Ok((unchecked_todo_list, checked_todo_list))
 }
+
+#[tauri::command]
+#[specta::specta]
+pub fn go_to_next_todo(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    index: u32,
+    checked: bool,
+) -> TAResult<(Vec<Todo>, Vec<Todo>)> {
+    let index = index as usize;
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+    let mut target_todo_list = target_project.todo_list.iter_mut();
+
+    let target_todo = target_todo_list
+        .nth(index)
+        .ok_or(anyhow::anyhow!("Failed to get todo"))?;
+
+    let target_todo_lap_time = target_todo
+        .lap_time
+        .ok_or(anyhow::anyhow!("Failed to get latest todo lap time"))?;
+    let previous_todo_lap_time = target_todo_list.nth(index - 1).and_then(|t| t.lap_time);
+
+    target_todo.elapsed_time = Some(target_todo_lap_time - previous_todo_lap_time.unwrap_or(0));
+    target_todo.checked = checked;
+    target_todo.checkable = false;
+
+    if let Some(next_todo) = target_todo_list.nth(index + 1) {
+        next_todo.checkable = true;
+    }
+
+    let (unchecked_todo_list, checked_todo_list): (Vec<Todo>, Vec<Todo>) = target_project
+        .todo_list
+        .clone()
+        .into_iter()
+        .partition(|t| !t.checked);
+
     SaveData::save(save_data, Path::new(&path))?;
-    Ok(new_todo)
+
+    Ok((unchecked_todo_list, checked_todo_list))
 }
