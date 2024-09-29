@@ -99,7 +99,11 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
 
 #[tauri::command]
 #[specta::specta]
-pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) -> TAResult<Todo> {
+pub fn add_todo(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    title: String,
+) -> TAResult<(Vec<Todo>, Vec<Todo>)> {
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
         .ok_or(anyhow::anyhow!("Failed to get path"))?;
@@ -118,7 +122,15 @@ pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) ->
         checkable: project.todo_list.len() == 0 || project.todo_list.iter().all(|t| !t.checkable),
         branch_name: None,
     };
-    project.todo_list.push(new_todo.clone());
+    project.todo_list.push(new_todo);
+    let (unchecked_todo_list, checked_todo_list): (Vec<Todo>, Vec<Todo>) = project
+        .todo_list
+        .clone()
+        .into_iter()
+        .partition(|t| !t.checked);
+    SaveData::save(save_data, Path::new(&path))?;
+    Ok((unchecked_todo_list, checked_todo_list))
+}
     SaveData::save(save_data, Path::new(&path))?;
     Ok(new_todo)
 }
