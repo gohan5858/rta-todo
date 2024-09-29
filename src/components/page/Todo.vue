@@ -15,9 +15,9 @@ const title = ref(project.title);
 const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
   ([unchecked, checked], todo) => {
     if (todo.checked) {
-      unchecked.value.push(todo);
-    } else {
       checked.value.push(todo);
+    } else {
+      unchecked.value.push(todo);
     }
     return [unchecked, checked];
   },
