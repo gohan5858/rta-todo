@@ -45,11 +45,11 @@ const removeTodo = () => {
   if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
   uncheckedTodoList.value.pop();
 };
-const goToNextTask = async (index: number, checked: boolean) => {
+const goToNextTask = async (_index: number, _checked: boolean) => {
+  const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
   [uncheckedTodoList.value, checkedTodoList.value] = await goToNextTodo(
     projectId,
-    index,
-    checked,
+    rtaTimer?.value?.getElapsedTime() ?? 0,
   );
 };
 </script>

@@ -62,8 +62,8 @@ export function addTodo(projectId: string, title: string) {
     return invoke()<[Todo[], Todo[]]>("add_todo", { projectId,title })
 }
 
-export function goToNextTodo(projectId: string, index: number, checked: boolean) {
-    return invoke()<[Todo[], Todo[]]>("go_to_next_todo", { projectId,index,checked })
+export function goToNextTodo(projectId: string, checked: boolean, lapTime: number) {
+    return invoke()<[Todo[], Todo[]]>("go_to_next_todo", { projectId,checked,lapTime })
 }
 
 export type Project = { id: string; title: string; deadline: string | null; completed: boolean; todoList: Todo[] }

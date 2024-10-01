@@ -1,6 +1,6 @@
 use crate::save_data::{Project, SaveData, Todo};
 use anyhow_tauri::TAResult;
-use std::path::Path;
+use std::{collections::VecDeque, path::Path};
 use tauri::{api::path::app_data_dir, Manager};
 
 #[tauri::command]
@@ -152,10 +152,8 @@ pub fn add_todo(
 pub fn go_to_next_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,
-    index: u32,
-    checked: bool,
+    lap_time: i32,
 ) -> TAResult<(Vec<Todo>, Vec<Todo>)> {
-    let index = index as usize;
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
         .ok_or(anyhow::anyhow!("Failed to get path"))?;
@@ -166,32 +164,40 @@ pub fn go_to_next_todo(
         .iter_mut()
         .find(|p| p.id == project_id)
         .ok_or(anyhow::anyhow!("Failed to find project"))?;
-    let mut target_todo_list = target_project.todo_list.iter_mut();
 
-    let target_todo = target_todo_list
-        .nth(index)
-        .ok_or(anyhow::anyhow!("Failed to get todo"))?;
+    let (mut unchecked_todo_list, mut checked_todo_list): (VecDeque<Todo>, Vec<Todo>) = {
+        let (unchecked, checked): (Vec<Todo>, Vec<Todo>) = target_project
+            .todo_list
+            .clone()
+            .into_iter()
+            .partition(|t| !t.checked);
+        (unchecked.into(), checked)
+    };
 
-    let target_todo_lap_time = target_todo
-        .lap_time
-        .ok_or(anyhow::anyhow!("Failed to get latest todo lap time"))?;
-    let previous_todo_lap_time = target_todo_list.nth(index - 1).and_then(|t| t.lap_time);
+    let previous_todo_lap_time = checked_todo_list.last().and_then(|t| t.lap_time);
 
-    target_todo.elapsed_time = Some(target_todo_lap_time - previous_todo_lap_time.unwrap_or(0));
-    target_todo.checked = checked;
-    target_todo.checkable = false;
+    let target_todo_elapsed_time = lap_time - previous_todo_lap_time.unwrap_or(0);
 
-    if let Some(next_todo) = target_todo_list.nth(index + 1) {
+    if let Some(mut target_todo) = unchecked_todo_list.pop_front() {
+        target_todo.lap_time = Some(lap_time);
+        target_todo.elapsed_time = Some(target_todo_elapsed_time);
+        target_todo.checked = true;
+        target_todo.checkable = false;
+        checked_todo_list.push(target_todo);
+    };
+
+    // popした後なので次のtodoがあれば最初の要素が次のtodo
+    if let Some(next_todo) = unchecked_todo_list.front_mut() {
         next_todo.checkable = true;
     }
 
-    let (unchecked_todo_list, checked_todo_list): (Vec<Todo>, Vec<Todo>) = target_project
-        .todo_list
+    target_project.todo_list = checked_todo_list
         .clone()
         .into_iter()
-        .partition(|t| !t.checked);
+        .chain(unchecked_todo_list.clone().into_iter())
+        .collect();
 
     SaveData::save(save_data, Path::new(&path))?;
 
-    Ok((unchecked_todo_list, checked_todo_list))
+    Ok((unchecked_todo_list.into(), checked_todo_list))
 }
