@@ -40,7 +40,7 @@ const addTodoItem = async () => {
     behavior: "smooth",
   });
 };
-const removeTodo = () => {
+const removeTodoItem = () => {
   // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
   if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
   uncheckedTodoList.value.pop();
@@ -80,7 +80,7 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
         </div>
         <div
           class="btn flex-grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
-          @click="removeTodo"
+          @click="removeTodoItem"
         >
           -
         </div>
