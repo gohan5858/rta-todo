@@ -27,7 +27,11 @@ const emit = defineEmits<{
           v-model="todoListItem.title"
         />
         <div class="h-1/4 whitespace-nowrap text-base">
-          {{ todoListItem?.lapTime || "--:--:--.--" }}
+          {{
+            (todoListItem.lapTime !== null &&
+              new Date(todoListItem.lapTime).toISOString().substring(11, 22)) ||
+            "--:--:--.--"
+          }}
           / {{ todoListItem?.elapsedTime?.toString() || "--" }} 分
         </div>
       </div>
