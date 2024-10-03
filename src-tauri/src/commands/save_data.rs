@@ -149,6 +149,35 @@ pub fn add_todo(
 
 #[tauri::command]
 #[specta::specta]
+pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<Vec<Todo>> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+    let project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    if let Some(last_todo) = project.todo_list.last() {
+        (!last_todo.checkable && !last_todo.checked).then(|| project.todo_list.pop());
+    }
+
+    let unchecked_todo_list: Vec<Todo> = project
+        .todo_list
+        .clone()
+        .into_iter()
+        .filter(|t| !t.checked)
+        .collect();
+
+    SaveData::save(save_data, Path::new(&path))?;
+
+    Ok(unchecked_todo_list)
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn go_to_next_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,

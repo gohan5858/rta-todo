@@ -25,6 +25,7 @@ fn main() {
             add_project,
             fetch_project,
             add_todo,
+            remove_todo,
             go_to_next_todo,
         ],
         "../src/bindings.ts",
@@ -46,6 +47,7 @@ fn main() {
             add_project,
             fetch_project,
             add_todo,
+            remove_todo,
             go_to_next_todo,
         ])
         .run(tauri::generate_context!())

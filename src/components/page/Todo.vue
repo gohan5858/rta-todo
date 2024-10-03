@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { addTodo, fetchProject, goToNextTodo, Todo } from "@/bindings";
+import {
+  addTodo,
+  fetchProject,
+  goToNextTodo,
+  removeTodo,
+  Todo,
+} from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import { nextTick, Ref, ref } from "vue";
@@ -40,10 +46,8 @@ const addTodoItem = async () => {
     behavior: "smooth",
   });
 };
-const removeTodoItem = () => {
-  // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
-  if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
-  uncheckedTodoList.value.pop();
+const removeTodoItem = async () => {
+  uncheckedTodoList.value = await removeTodo(projectId);
 };
 const goToNextTask = async (_index: number, _checked: boolean) => {
   const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
