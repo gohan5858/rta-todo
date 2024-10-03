@@ -50,7 +50,6 @@ const removeTodoItem = async () => {
   uncheckedTodoList.value = await removeTodo(projectId);
 };
 const goToNextTask = async (_index: number, _checked: boolean) => {
-  const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
   [uncheckedTodoList.value, checkedTodoList.value] = await goToNextTodo(
     projectId,
     rtaTimer?.value?.getElapsedTime() ?? 0,
