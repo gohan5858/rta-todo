@@ -70,6 +70,6 @@ export function goToNextTodo(projectId: string, lapTime: number) {
     return invoke()<[Todo[], Todo[]]>("go_to_next_todo", { projectId,lapTime })
 }
 
-export type Project = { id: string; title: string; deadline: string | null; completed: boolean; todoList: Todo[] }
+export type Project = { id: string; title: string; deadline: string | null; currentElapsedTime: number; completed: boolean; todoList: Todo[] }
 export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; checked: boolean; checkable: boolean; branchName: string | null }
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }

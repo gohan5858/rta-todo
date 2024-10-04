@@ -65,6 +65,8 @@ pub(crate) struct Project {
     pub title: String,
     #[serde(with = "ts_seconds_option")]
     pub deadline: Option<DateTime<Utc>>,
+    #[serde(rename = "currentElapsedTime")]
+    pub current_elapsed_time: i32,
     pub completed: bool,
     #[serde(rename = "todoList")]
     pub todo_list: Vec<Todo>,

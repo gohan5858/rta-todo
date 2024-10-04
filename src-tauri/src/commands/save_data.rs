@@ -90,6 +90,7 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
         id: uuid::Uuid::now_v7(),
         title,
         deadline,
+        current_elapsed_time: 0,
         completed: false,
         todo_list: Vec::new(),
     });
