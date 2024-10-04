@@ -210,7 +210,7 @@ pub fn go_to_next_todo(
     if let Some(mut target_todo) = unchecked_todo_list.pop_front() {
         target_todo.lap_time = Some(lap_time);
         // ミリ秒から分に変換
-        let target_todo_elapsed_time_min = target_todo_elapsed_time / 1000 / 3600;
+        let target_todo_elapsed_time_min = target_todo_elapsed_time / 1000 / 60;
         target_todo.elapsed_time = Some(target_todo_elapsed_time_min);
         target_todo.checked = true;
         target_todo.checkable = false;
