@@ -2,13 +2,19 @@
 import {
   getCurrentTime,
   pauseTimer,
+  resetCurrentElapsedTime,
   resetTimer,
   resumeTimer,
   startTimer,
   updateCurrentElapsedTime,
 } from "@/bindings";
 import { useIntervalFn } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
+
+onUnmounted(async () => {
+  await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
+  await resetCurrentElapsedTime();
+});
 
 const props = defineProps<{
   projectId: string;
