@@ -27,6 +27,7 @@ fn main() {
             add_todo,
             remove_todo,
             go_to_next_todo,
+            update_current_elapsed_time,
         ],
         "../src/bindings.ts",
     )
@@ -49,6 +50,7 @@ fn main() {
             add_todo,
             remove_todo,
             go_to_next_todo,
+            update_current_elapsed_time,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

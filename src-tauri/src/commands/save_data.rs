@@ -233,3 +233,28 @@ pub fn go_to_next_todo(
 
     Ok((unchecked_todo_list.into(), checked_todo_list))
 }
+
+#[tauri::command]
+#[specta::specta]
+pub fn update_current_elapsed_time(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    current_elapsed_time: i32,
+) -> TAResult<()> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    target_project.current_elapsed_time = current_elapsed_time;
+
+    SaveData::save(save_data, Path::new(&path))?;
+
+    Ok(())
+}
