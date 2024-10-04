@@ -54,6 +54,22 @@ export function addProject(title: string, deadline: string | null) {
     return invoke()<null>("add_project", { title,deadline })
 }
 
+export function fetchProject(projectId: string) {
+    return invoke()<Project>("fetch_project", { projectId })
+}
+
+export function addTodo(projectId: string, title: string) {
+    return invoke()<[Todo[], Todo[]]>("add_todo", { projectId,title })
+}
+
+export function removeTodo(projectId: string) {
+    return invoke()<Todo[]>("remove_todo", { projectId })
+}
+
+export function goToNextTodo(projectId: string, lapTime: number) {
+    return invoke()<[Todo[], Todo[]]>("go_to_next_todo", { projectId,lapTime })
+}
+
 export type Project = { id: string; title: string; deadline: string | null; completed: boolean; todoList: Todo[] }
-export type Todo = { id: number; lap_time: number | null; elapsed_time: number | null; checked: boolean; checkable: boolean; branch_name: string | null }
+export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; checked: boolean; checkable: boolean; branchName: string | null }
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }

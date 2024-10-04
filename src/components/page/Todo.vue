@@ -1,26 +1,43 @@
 <script setup lang="ts">
-import { TodoItem } from "@/todoItem";
+import {
+  addTodo,
+  fetchProject,
+  goToNextTodo,
+  removeTodo,
+  Todo,
+} from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
-import { nextTick, ref } from "vue";
+import { nextTick, Ref, ref } from "vue";
+import { useRoute } from "vue-router";
 
-const title = ref("タイトル");
-const checkedTodoList = ref<TodoItem[]>([]);
-const uncheckedTodoList = ref<TodoItem[]>([]);
+const route = useRoute();
+const projectId = route.params.projectId as string;
+
+const project = await fetchProject(projectId);
+
+const title = ref(project.title);
+
+const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
+  ([unchecked, checked], todo) => {
+    if (todo.checked) {
+      checked.value.push(todo);
+    } else {
+      unchecked.value.push(todo);
+    }
+    return [unchecked, checked];
+  },
+  [ref([]), ref([])] as [Ref<Todo[]>, Ref<Todo[]>],
+);
 
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
-const addTodo = async () => {
-  uncheckedTodoList.value?.push({
-    title: "タスク名",
-    lapTime: undefined,
-    elapsedTime: undefined,
-    checked: false,
-    checkable:
-      uncheckedTodoList.value.length === 0 ||
-      uncheckedTodoList.value?.every((todo) => !todo.checkable),
-  });
+const addTodoItem = async () => {
+  [uncheckedTodoList.value, checkedTodoList.value] = await addTodo(
+    projectId,
+    "新しいタスク",
+  );
 
   // DOMの更新を待ってからスクロールする
   await nextTick();
@@ -29,27 +46,14 @@ const addTodo = async () => {
     behavior: "smooth",
   });
 };
-const removeTodo = () => {
-  // NOTE: 全てがチェック可能なtodoがない = 全てのtodoが完了済みなので削除しない
-  if (uncheckedTodoList.value.every((todo) => !todo.checkable)) return;
-  uncheckedTodoList.value.pop();
+const removeTodoItem = async () => {
+  uncheckedTodoList.value = await removeTodo(projectId);
 };
-const goToNextTask = (index: number, checked: boolean) => {
-  uncheckedTodoList.value[index].lapTime = rtaTimer?.value?.getElapsedTime();
-
-  uncheckedTodoList.value[index].elapsedTime = Math.round(
-    ((uncheckedTodoList.value[index]?.lapTime?.getTime() || 0) -
-      (uncheckedTodoList.value[index - 1]?.lapTime?.getTime() || 0)) /
-      (1000 * 60),
+const goToNextTask = async (_index: number, _checked: boolean) => {
+  [uncheckedTodoList.value, checkedTodoList.value] = await goToNextTodo(
+    projectId,
+    rtaTimer?.value?.getElapsedTime() ?? 0,
   );
-
-  uncheckedTodoList.value[index].checked = checked;
-  uncheckedTodoList.value[index].checkable = false;
-  uncheckedTodoList.value[index + 1] &&
-    (uncheckedTodoList.value[index + 1].checkable = true);
-
-  checkedTodoList.value.push(uncheckedTodoList.value[index]);
-  uncheckedTodoList.value.splice(index, 1);
 };
 </script>
 
@@ -73,13 +77,13 @@ const goToNextTask = (index: number, checked: boolean) => {
       <div class="flex flex-row">
         <div
           class="btn flex-grow bg-orange-400 text-xl text-black hover:bg-orange-500"
-          @click="addTodo"
+          @click="addTodoItem"
         >
           +
         </div>
         <div
           class="btn flex-grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
-          @click="removeTodo"
+          @click="removeTodoItem"
         >
           -
         </div>

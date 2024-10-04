@@ -35,7 +35,7 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
               :key="project.id"
               :to="{
                 name: 'todo',
-                params: { id: project.id },
+                params: { projectId: project.id },
               }"
             >
               <div class="btn flex-grow text-xl">

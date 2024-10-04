@@ -322,8 +322,10 @@ checksum = "a21f936df1771bf62b77f047b726c4625ff2e8aa607c01ec06e5a05bd8463401"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-targets 0.52.6",
 ]
 
@@ -2235,6 +2237,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "anyhow-tauri",
+ "chrono",
  "serde",
  "serde_json",
  "specta",
@@ -2537,6 +2540,7 @@ version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2240c3aa020aa61d2c569087d213baafbb212f4ceb9de9dd162376ea6aa0fe3"
 dependencies = [
+ "chrono",
  "document-features",
  "indoc 1.0.9",
  "once_cell",

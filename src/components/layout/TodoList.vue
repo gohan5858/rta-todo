@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TodoItem } from "@/todoItem";
+import { Todo } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
 import { SortableEvent, VueDraggable } from "vue-draggable-plus";
 
@@ -7,10 +7,10 @@ const emit = defineEmits<{
   checkedTodo: [index: number, checked: boolean];
 }>();
 
-const checkedTodoList = defineModel<TodoItem[]>("checkedTodoList", {
+const checkedTodoList = defineModel<Todo[]>("checkedTodoList", {
   required: true,
 });
-const uncheckedTodoList = defineModel<TodoItem[]>("uncheckedTodoList", {
+const uncheckedTodoList = defineModel<Todo[]>("uncheckedTodoList", {
   required: true,
 });
 

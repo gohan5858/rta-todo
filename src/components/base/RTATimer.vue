@@ -58,7 +58,7 @@ const formattedTime = computed((): string => {
 });
 
 const getElapsedTime = () => {
-  return new Date(elapsedTime.value);
+  return elapsedTime.value;
 };
 
 defineExpose({

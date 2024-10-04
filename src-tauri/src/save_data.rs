@@ -1,10 +1,10 @@
+use anyhow_tauri::TAResult;
+use chrono::{serde::ts_seconds_option, DateTime, Utc};
 use std::{
     fs::{create_dir_all, File, OpenOptions},
     io::BufReader,
     path::Path,
 };
-
-use anyhow_tauri::TAResult;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct SaveData {
@@ -63,8 +63,8 @@ impl Default for SaveData {
 pub(crate) struct Project {
     pub id: uuid::Uuid,
     pub title: String,
-    // HACK: 本来はOption<chrono::DateTime<chrono::Utc>> にしたいが、specta::Type が対応していないため、Option<String> にしている
-    pub deadline: Option<String>,
+    #[serde(with = "ts_seconds_option")]
+    pub deadline: Option<DateTime<Utc>>,
     pub completed: bool,
     #[serde(rename = "todoList")]
     pub todo_list: Vec<Todo>,
@@ -72,10 +72,14 @@ pub(crate) struct Project {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub(crate) struct Todo {
-    pub id: i32,
+    pub id: uuid::Uuid,
+    pub title: String,
+    #[serde(rename = "lapTime")]
     pub lap_time: Option<i32>,
+    #[serde(rename = "elapsedTime")]
     pub elapsed_time: Option<i32>,
     pub checked: bool,
     pub checkable: bool,
+    #[serde(rename = "branchName")]
     pub branch_name: Option<String>,
 }

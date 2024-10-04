@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TodoItem } from "@/todoItem";
+import { Todo } from "@/bindings";
 
-const todoListItem = defineModel<TodoItem>("todoListItem", {
+const todoListItem = defineModel<Todo>("todoListItem", {
   required: true,
 });
 const emit = defineEmits<{
@@ -28,7 +28,8 @@ const emit = defineEmits<{
         />
         <div class="h-1/4 whitespace-nowrap text-base">
           {{
-            todoListItem?.lapTime?.toISOString().substring(11, 22) ||
+            (todoListItem.lapTime !== null &&
+              new Date(todoListItem.lapTime).toISOString().substring(11, 22)) ||
             "--:--:--.--"
           }}
           / {{ todoListItem?.elapsedTime?.toString() || "--" }} 分

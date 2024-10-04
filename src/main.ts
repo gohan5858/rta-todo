@@ -9,7 +9,7 @@ import "./assets/global.css";
 const routes = [
   { path: '/', name: 'home', component: Home },
   { path: '/settings', name: 'settings', component: Settings },
-  { path: '/todo/:id', name: 'todo', component: Todo },
+  { path: '/todo/:projectId', name: 'todo', component: Todo },
 ];
 const router = createRouter({
   history: createWebHashHistory(),
