@@ -74,6 +74,10 @@ export function updateCurrentElapsedTime(projectId: string, currentElapsedTime: 
     return invoke()<null>("update_current_elapsed_time", { projectId,currentElapsedTime })
 }
 
+export function resetCurrentElapsedTime() {
+    return invoke()<null>("reset_current_elapsed_time")
+}
+
 export type Project = { id: string; title: string; deadline: string | null; currentElapsedTime: number; completed: boolean; todoList: Todo[] }
 export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; checked: boolean; checkable: boolean; branchName: string | null }
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }

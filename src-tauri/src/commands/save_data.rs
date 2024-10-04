@@ -1,4 +1,7 @@
-use crate::save_data::{Project, SaveData, Todo};
+use crate::{
+    save_data::{Project, SaveData, Todo},
+    CURRENT_TIME,
+};
 use anyhow_tauri::TAResult;
 use std::{collections::VecDeque, path::Path};
 use tauri::{api::path::app_data_dir, Manager};
@@ -256,5 +259,17 @@ pub fn update_current_elapsed_time(
 
     SaveData::save(save_data, Path::new(&path))?;
 
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn reset_current_elapsed_time() -> TAResult<()> {
+    CURRENT_TIME
+        .lock()
+        .map(|mut current_time| {
+            *current_time = 0;
+        })
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
     Ok(())
 }
