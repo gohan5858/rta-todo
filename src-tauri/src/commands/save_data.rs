@@ -1,6 +1,6 @@
 use crate::{
     save_data::{Project, SaveData, Todo},
-    CURRENT_TIME,
+    CURRENT_TIME, IS_PAUSED,
 };
 use anyhow_tauri::TAResult;
 use std::{collections::VecDeque, path::Path};
@@ -265,6 +265,12 @@ pub fn update_current_elapsed_time(
 #[tauri::command]
 #[specta::specta]
 pub fn reset_current_elapsed_time() -> TAResult<()> {
+    IS_PAUSED
+        .lock()
+        .map(|mut is_paused| {
+            *is_paused = true;
+        })
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
     CURRENT_TIME
         .lock()
         .map(|mut current_time| {
