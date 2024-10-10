@@ -264,6 +264,23 @@ pub fn update_current_elapsed_time(
 
 #[tauri::command]
 #[specta::specta]
+pub fn get_current_elapsed_time(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<u32> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    Ok(target_project.current_elapsed_time as u32)
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn reset_current_elapsed_time() -> TAResult<()> {
     IS_PAUSED
         .lock()

@@ -28,6 +28,7 @@ fn main() {
             remove_todo,
             go_to_next_todo,
             update_current_elapsed_time,
+            get_current_elapsed_time,
             reset_current_elapsed_time,
         ],
         "../src/bindings.ts",
@@ -52,6 +53,7 @@ fn main() {
             remove_todo,
             go_to_next_todo,
             update_current_elapsed_time,
+            get_current_elapsed_time,
             reset_current_elapsed_time,
         ])
         .run(tauri::generate_context!())

@@ -74,6 +74,10 @@ export function updateCurrentElapsedTime(projectId: string, currentElapsedTime: 
     return invoke()<null>("update_current_elapsed_time", { projectId,currentElapsedTime })
 }
 
+export function getCurrentElapsedTime(projectId: string) {
+    return invoke()<number>("get_current_elapsed_time", { projectId })
+}
+
 export function resetCurrentElapsedTime() {
     return invoke()<null>("reset_current_elapsed_time")
 }
