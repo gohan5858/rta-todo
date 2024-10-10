@@ -89,3 +89,20 @@ pub fn get_current_time() -> TAResult<u32> {
     };
     Ok(*current_time)
 }
+#[tauri::command]
+#[specta::specta]
+pub fn reset_current_elapsed_time() -> TAResult<()> {
+    IS_PAUSED
+        .lock()
+        .map(|mut is_paused| {
+            *is_paused = true;
+        })
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    CURRENT_TIME
+        .lock()
+        .map(|mut current_time| {
+            *current_time = 0;
+        })
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    Ok(())
+}

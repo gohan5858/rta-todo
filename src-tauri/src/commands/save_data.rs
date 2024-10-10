@@ -1,7 +1,4 @@
-use crate::{
-    save_data::{Project, SaveData, Todo},
-    CURRENT_TIME, IS_PAUSED,
-};
+use crate::save_data::{Project, SaveData, Todo};
 use anyhow_tauri::TAResult;
 use std::{collections::VecDeque, path::Path};
 use tauri::{api::path::app_data_dir, Manager};
@@ -277,22 +274,4 @@ pub fn get_current_elapsed_time(app: tauri::AppHandle, project_id: uuid::Uuid) -
         .ok_or(anyhow::anyhow!("Failed to find project"))?;
 
     Ok(target_project.current_elapsed_time as u32)
-}
-
-#[tauri::command]
-#[specta::specta]
-pub fn reset_current_elapsed_time() -> TAResult<()> {
-    IS_PAUSED
-        .lock()
-        .map(|mut is_paused| {
-            *is_paused = true;
-        })
-        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
-    CURRENT_TIME
-        .lock()
-        .map(|mut current_time| {
-            *current_time = 0;
-        })
-        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
-    Ok(())
 }
