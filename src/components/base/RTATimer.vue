@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import {
   getCurrentTime,
+  initiateTimer,
   pauseTimer,
   resetCurrentElapsedTime,
   resetTimer,
   resumeTimer,
-  startTimer,
   updateCurrentElapsedTime,
 } from "@/bindings";
 import { useIntervalFn } from "@vueuse/core";
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+
+onMounted(async () => {
+  elapsedTime.value = await initiateTimer(props.projectId);
+  previousTime.value = elapsedTime.value;
+});
 
 onUnmounted(async () => {
   await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
@@ -48,7 +53,6 @@ const currentElapsedTimeUpdater = useIntervalFn(
 // ストップウォッチを開始する関数
 const start = async () => {
   if (!isRunning.value) {
-    await startTimer();
     await resumeTimer();
     resume();
     currentElapsedTimeUpdater.resume();

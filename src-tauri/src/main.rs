@@ -12,7 +12,7 @@ fn main() {
     #[cfg(debug_assertions)]
     ts::export(
         collect_types![
-            start_timer,
+            initiate_timer,
             pause_timer,
             resume_timer,
             reset_timer,
@@ -37,7 +37,7 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            start_timer,
+            initiate_timer,
             pause_timer,
             resume_timer,
             reset_timer,
