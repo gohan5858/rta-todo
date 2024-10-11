@@ -1,13 +1,29 @@
 <script setup lang="ts">
 import {
   getCurrentTime,
+  initiateTimer,
   pauseTimer,
+  resetCurrentElapsedTime,
   resetTimer,
   resumeTimer,
-  startTimer,
+  updateCurrentElapsedTime,
 } from "@/bindings";
 import { useIntervalFn } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+
+onMounted(async () => {
+  elapsedTime.value = await initiateTimer(props.projectId);
+  previousTime.value = elapsedTime.value;
+});
+
+onUnmounted(async () => {
+  await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
+  await resetCurrentElapsedTime();
+});
+
+const props = defineProps<{
+  projectId: string;
+}>();
 
 // ストップウォッチの経過時間（ミリ秒）を保持する変数
 const elapsedTime = ref(0);
@@ -26,12 +42,20 @@ const { pause, resume } = useIntervalFn(
   { immediate: false },
 );
 
+const currentElapsedTimeUpdater = useIntervalFn(
+  async () => {
+    await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
+  },
+  1000,
+  { immediate: false },
+);
+
 // ストップウォッチを開始する関数
 const start = async () => {
   if (!isRunning.value) {
-    await startTimer();
     await resumeTimer();
     resume();
+    currentElapsedTimeUpdater.resume();
     isRunning.value = true;
   }
 };
@@ -40,6 +64,7 @@ const stop = async () => {
   if (isRunning.value) {
     await pauseTimer();
     pause();
+    currentElapsedTimeUpdater.pause();
     isRunning.value = false;
   }
 };
@@ -47,6 +72,7 @@ const stop = async () => {
 const reset = async () => {
   await resetTimer();
   pause();
+  currentElapsedTimeUpdater.pause();
   previousTime.value = 0;
   elapsedTime.value = 0;
   isRunning.value = false;

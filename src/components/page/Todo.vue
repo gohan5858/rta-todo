@@ -89,6 +89,6 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
         </div>
       </div>
     </div>
-    <RTATimer ref="rtaTimer" class="bg-base-300 p-2" />
+    <RTATimer :projectId="projectId" ref="rtaTimer" class="bg-base-300 p-2" />
   </div>
 </template>

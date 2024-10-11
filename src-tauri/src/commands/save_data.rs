@@ -90,6 +90,7 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
         id: uuid::Uuid::now_v7(),
         title,
         deadline,
+        current_elapsed_time: 0,
         completed: false,
         todo_list: Vec::new(),
     });
@@ -231,4 +232,46 @@ pub fn go_to_next_todo(
     SaveData::save(save_data, Path::new(&path))?;
 
     Ok((unchecked_todo_list.into(), checked_todo_list))
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn update_current_elapsed_time(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    current_elapsed_time: i32,
+) -> TAResult<()> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    target_project.current_elapsed_time = current_elapsed_time;
+
+    SaveData::save(save_data, Path::new(&path))?;
+
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_current_elapsed_time(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<u32> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    Ok(target_project.current_elapsed_time as u32)
 }

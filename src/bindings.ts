@@ -10,8 +10,8 @@ declare global {
 // Function avoids 'window not defined' in SSR
 const invoke = () => window.__TAURI_INVOKE__;
 
-export function startTimer() {
-    return invoke()<null>("start_timer")
+export function initiateTimer(projectId: string) {
+    return invoke()<number>("initiate_timer", { projectId })
 }
 
 export function pauseTimer() {
@@ -70,6 +70,18 @@ export function goToNextTodo(projectId: string, lapTime: number) {
     return invoke()<[Todo[], Todo[]]>("go_to_next_todo", { projectId,lapTime })
 }
 
-export type Project = { id: string; title: string; deadline: string | null; completed: boolean; todoList: Todo[] }
+export function updateCurrentElapsedTime(projectId: string, currentElapsedTime: number) {
+    return invoke()<null>("update_current_elapsed_time", { projectId,currentElapsedTime })
+}
+
+export function getCurrentElapsedTime(projectId: string) {
+    return invoke()<number>("get_current_elapsed_time", { projectId })
+}
+
+export function resetCurrentElapsedTime() {
+    return invoke()<null>("reset_current_elapsed_time")
+}
+
+export type Project = { id: string; title: string; deadline: string | null; currentElapsedTime: number; completed: boolean; todoList: Todo[] }
 export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; checked: boolean; checkable: boolean; branchName: string | null }
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }
