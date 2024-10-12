@@ -5,7 +5,7 @@ const title = defineModel<string>({ required: true });
 </script>
 
 <template>
-  <div class="navbar bg-base-300">
+  <div class="navbar">
     <div class="navbar-start">
       <button class="btn btn-ghost" @click="$router.back()">
         <PhCaretDoubleLeft :size="20" />
