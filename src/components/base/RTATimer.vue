@@ -89,7 +89,7 @@ defineExpose({
         Start
       </button>
       <button class="btn btn-secondary btn-md w-full" @click="stop">
-        Pause
+        Stop
       </button>
     </div>
   </div>
