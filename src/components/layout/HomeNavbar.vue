@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhFaders } from "@phosphor-icons/vue";
+import { PhClockCounterClockwise, PhFaders } from "@phosphor-icons/vue";
 
 const displayCompleted = defineModel<boolean>({
   required: true,
@@ -96,7 +96,13 @@ const displayCompleted = defineModel<boolean>({
             </div></RouterLink
           >
         </li>
-        <li><a>Sidebar Item 2</a></li>
+        <li>
+          <RouterLink :to="{ name: 'coming_soon' }">
+            <div class="flex flex-row items-center gap-2 text-lg">
+              <PhClockCounterClockwise /> タイムライン
+            </div>
+          </RouterLink>
+        </li>
       </ul>
     </div>
   </div>
