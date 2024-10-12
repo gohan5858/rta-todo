@@ -69,7 +69,7 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
     </div>
     <dialog class="modal" ref="newTodoPopup">
       <div class="modal-box">
-        <h3 class="text-center text-lg font-bold">大タスクを作成</h3>
+        <h3 class="text-center text-lg font-bold">プロジェクトを作成</h3>
         <div class="flex w-full flex-col items-center gap-3">
           <label class="form-control w-full">
             <div class="label">
