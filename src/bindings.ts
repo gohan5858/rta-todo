@@ -22,10 +22,6 @@ export function resumeTimer() {
     return invoke()<null>("resume_timer")
 }
 
-export function resetTimer() {
-    return invoke()<null>("reset_timer")
-}
-
 export function getCurrentTime() {
     return invoke()<number>("get_current_time")
 }

@@ -86,24 +86,6 @@ pub fn resume_timer() -> TAResult<()> {
 }
 #[tauri::command]
 #[specta::specta]
-pub fn reset_timer() -> TAResult<()> {
-    let Ok(mut current_time) = CURRENT_TIME.lock() else {
-        return Err(anyhow::anyhow!("Failed to acquire lock").into());
-    };
-    *current_time = 0;
-
-    let Ok(mut is_paused) = IS_PAUSED.lock() else {
-        return Err(anyhow::anyhow!("Failed to acquire lock").into());
-    };
-    *is_paused = false;
-
-    if let Some(join) = CURRENT_TIMER.lock().unwrap().take() {
-        join.abort();
-    }
-    Ok(())
-}
-#[tauri::command]
-#[specta::specta]
 pub fn get_current_time() -> TAResult<u32> {
     let Ok(current_time) = CURRENT_TIME.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire lock").into());
