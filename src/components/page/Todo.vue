@@ -8,6 +8,7 @@ import {
 } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
+import TodoNavbar from "@layout/TodoNavbar.vue";
 import { nextTick, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -59,12 +60,7 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
 
 <template>
   <div class="grid grid-cols-1 grid-rows-[1fr_7fr_2fr] gap-2">
-    <input
-      type="text"
-      placeholder="Type here"
-      class="input input-bordered input-ghost w-full bg-base-300 text-center"
-      :value="title"
-    />
+    <TodoNavbar v-model="title" />
     <div
       ref="todoListArea"
       class="flex flex-col gap-5 overflow-auto bg-base-300 p-2"
