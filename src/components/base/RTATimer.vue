@@ -4,7 +4,6 @@ import {
   initiateTimer,
   pauseTimer,
   resetCurrentElapsedTime,
-  resetTimer,
   resumeTimer,
   updateCurrentElapsedTime,
 } from "@/bindings";
@@ -68,16 +67,6 @@ const stop = async () => {
     isRunning.value = false;
   }
 };
-// ストップウォッチをリセットする関数
-const reset = async () => {
-  await resetTimer();
-  pause();
-  currentElapsedTimeUpdater.pause();
-  previousTime.value = 0;
-  elapsedTime.value = 0;
-  isRunning.value = false;
-};
-
 // 経過時間をフォーマットする関数
 const formattedTime = computed((): string => {
   return new Date(elapsedTime.value).toISOString().substring(11, 22);
@@ -98,7 +87,6 @@ defineExpose({
     <div class="flex flex-row items-center justify-center gap-3">
       <button class="btn btn-primary btn-md" @click="start">Start</button>
       <button class="btn btn-secondary btn-md" @click="stop">Pause</button>
-      <button class="btn btn-warning btn-md" @click="reset">Reset</button>
     </div>
   </div>
 </template>
