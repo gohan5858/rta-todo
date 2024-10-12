@@ -34,6 +34,10 @@ export function loadData() {
     return invoke()<SaveData>("load_data")
 }
 
+export function setTitle(projectId: string, title: string) {
+    return invoke()<null>("set_title", { projectId,title })
+}
+
 export function setTheme(theme: string) {
     return invoke()<null>("set_theme", { theme })
 }

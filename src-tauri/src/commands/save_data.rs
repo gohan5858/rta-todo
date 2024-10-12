@@ -16,6 +16,23 @@ pub fn load_data(app: tauri::AppHandle) -> TAResult<SaveData> {
 
 #[tauri::command]
 #[specta::specta]
+pub fn set_title(app: tauri::AppHandle, project_id: uuid::Uuid, title: String) -> TAResult<()> {
+    let path = app_data_dir(&app.config())
+        .and_then(|p| p.into_os_string().into_string().ok())
+        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+    let project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+    project.title = title;
+    SaveData::save(save_data, Path::new(&path))?;
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn set_theme(app: tauri::AppHandle, theme: String) -> TAResult<()> {
     let path = app_data_dir(&app.config())
         .and_then(|p| p.into_os_string().into_string().ok())
