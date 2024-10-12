@@ -4,12 +4,13 @@ import {
   fetchProject,
   goToNextTodo,
   removeTodo,
+  setTitle,
   Todo,
 } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import TodoNavbar from "@layout/TodoNavbar.vue";
-import { nextTick, Ref, ref } from "vue";
+import { nextTick, Ref, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -18,6 +19,11 @@ const projectId = route.params.projectId as string;
 const project = await fetchProject(projectId);
 
 const title = ref(project.title);
+
+watch(title, async (newTitle) => {
+  console.log("title changed", newTitle);
+  await setTitle(projectId, newTitle);
+});
 
 const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
   ([unchecked, checked], todo) => {
