@@ -12,7 +12,7 @@ import { PhCaretDoubleLeft } from "@phosphor-icons/vue";
     </div>
     <div class="navbar-center text-center text-xl font-bold">設定</div>
     <div class="navbar-end">
-      <button class="btn btn-circle btn-ghost">
+      <button class="btn btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
