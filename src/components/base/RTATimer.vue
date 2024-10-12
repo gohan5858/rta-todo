@@ -85,8 +85,12 @@ defineExpose({
   <div class="flex flex-col items-center justify-between">
     <div class="text-4xl">{{ formattedTime }}</div>
     <div class="flex flex-row items-center justify-center gap-3">
-      <button class="btn btn-primary btn-md" @click="start">Start</button>
-      <button class="btn btn-secondary btn-md" @click="stop">Pause</button>
+      <button class="btn btn-primary btn-md w-full" @click="start">
+        Start
+      </button>
+      <button class="btn btn-secondary btn-md w-full" @click="stop">
+        Pause
+      </button>
     </div>
   </div>
 </template>
