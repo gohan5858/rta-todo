@@ -67,10 +67,7 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
 <template>
   <div class="grid grid-cols-1 grid-rows-[1fr_7fr_2fr] gap-2">
     <TodoNavbar v-model="title" />
-    <div
-      ref="todoListArea"
-      class="flex flex-col gap-5 overflow-auto bg-base-300 p-2"
-    >
+    <div ref="todoListArea" class="flex flex-col gap-5 overflow-auto p-2">
       <TodoList
         @checked-todo="(index, checked) => goToNextTask(index, checked)"
         v-model:checked-todo-list="checkedTodoList"
@@ -91,6 +88,6 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
         </div>
       </div>
     </div>
-    <RTATimer :projectId="projectId" ref="rtaTimer" class="bg-base-300 p-2" />
+    <RTATimer :projectId="projectId" ref="rtaTimer" class="p-2" />
   </div>
 </template>
