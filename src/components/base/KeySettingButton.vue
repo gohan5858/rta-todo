@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { os } from "@tauri-apps/api";
-import { OsType } from "@tauri-apps/api/os";
+import {} from "@tauri-apps/api";
+import * as os from "@tauri-apps/plugin-os";
+import { OsType } from "@tauri-apps/plugin-os";
 import { useMagicKeys } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 
@@ -20,10 +21,10 @@ const assignedKeys = defineModel<string[]>({ required: true });
 const currentKeys = ref<string[]>([]);
 const keyPopup = ref<HTMLDialogElement | null>(null);
 
-const osName = ref<OsType>("Darwin");
+const osName = ref<OsType>("macos");
 
 onMounted(async () => {
-  osName.value = await os.type();
+  osName.value = os.type();
 });
 
 const { current } = useMagicKeys({
@@ -36,11 +37,13 @@ const { current } = useMagicKeys({
       currentKeys.value = Array.from(current).map((key) => {
         if (key === "meta") {
           switch (osName.value) {
-            case "Darwin":
+            case "macos":
+            case "ios":
               return "⌘";
-            case "Windows_NT":
+            case "windows":
+            case "android":
               return "WIN";
-            case "Linux":
+            case "linux":
               return "SUPER";
           }
         } else if (key === " ") {
