@@ -1,7 +1,7 @@
 use crate::save_data::{Project, SaveData, Todo};
 use anyhow_tauri::TAResult;
 use std::{collections::VecDeque, path::Path};
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 #[tauri::command]
 #[specta::specta]
@@ -52,7 +52,7 @@ pub fn set_theme(app: tauri::AppHandle, theme: String) -> TAResult<()> {
     let mut save_data = SaveData::load(Path::new(&path))?;
     save_data.theme = theme;
     SaveData::save(save_data, Path::new(&path))?;
-    app.emit_all("update-setting", ())
+    app.emit("update-setting", ())
         .map_err(|e| anyhow::anyhow!(e))?;
     Ok(())
 }
@@ -70,7 +70,7 @@ pub fn set_is_auto_start(app: tauri::AppHandle, is_auto_start: bool) -> TAResult
     let mut save_data = SaveData::load(Path::new(&path))?;
     save_data.is_auto_start = is_auto_start;
     SaveData::save(save_data, Path::new(&path))?;
-    app.emit_all("update-setting", ())
+    app.emit("update-setting", ())
         .map_err(|e| anyhow::anyhow!(e))?;
     Ok(())
 }
@@ -91,7 +91,7 @@ pub fn set_is_notification_of_deadline(
     let mut save_data = SaveData::load(Path::new(&path))?;
     save_data.is_notification_of_deadline = is_notification_of_deadline;
     SaveData::save(save_data, Path::new(&path))?;
-    app.emit_all("update-setting", ())
+    app.emit("update-setting", ())
         .map_err(|e| anyhow::anyhow!(e))?;
     Ok(())
 }
@@ -112,7 +112,7 @@ pub fn set_is_notification_exceeded_goal_lap_time(
     let mut save_data = SaveData::load(Path::new(&path))?;
     save_data.is_notification_exceeded_goal_lap_time = is_notification_exceeded_goal_lap_time;
     SaveData::save(save_data, Path::new(&path))?;
-    app.emit_all("update-setting", ())
+    app.emit("update-setting", ())
         .map_err(|e| anyhow::anyhow!(e))?;
     Ok(())
 }
