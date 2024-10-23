@@ -26,6 +26,7 @@ anyhow-tauri = "1.0.0"
 uuid = { version = "1.10.0", features = ["v7", "serde"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 tauri-plugin-os = "2"
+specta-typescript = "0.0.7"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

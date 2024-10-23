@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import {
-  getCurrentTime,
-  initiateTimer,
-  pauseTimer,
-  resetCurrentElapsedTime,
-  resumeTimer,
-  updateCurrentElapsedTime,
-} from "@/bindings";
+import { commands } from "@/bindings";
 import { useIntervalFn } from "@vueuse/core";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
 onMounted(async () => {
-  elapsedTime.value = await initiateTimer(props.projectId);
+  elapsedTime.value = await commands.initiateTimer(props.projectId);
   previousTime.value = elapsedTime.value;
 });
 
 onUnmounted(async () => {
-  await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
-  await resetCurrentElapsedTime();
+  await commands.updateCurrentElapsedTime(props.projectId, elapsedTime.value);
+  await commands.resetCurrentElapsedTime();
 });
 
 const props = defineProps<{
@@ -33,7 +26,7 @@ const isRunning = ref(false);
 // ストップウォッチを動かす関数
 const { pause, resume } = useIntervalFn(
   async () => {
-    const currentTime = await getCurrentTime();
+    const currentTime = await commands.getCurrentTime();
     elapsedTime.value += currentTime - previousTime.value;
     previousTime.value = currentTime;
   },
@@ -43,7 +36,7 @@ const { pause, resume } = useIntervalFn(
 
 const currentElapsedTimeUpdater = useIntervalFn(
   async () => {
-    await updateCurrentElapsedTime(props.projectId, elapsedTime.value);
+    await commands.updateCurrentElapsedTime(props.projectId, elapsedTime.value);
   },
   1000,
   { immediate: false },
@@ -52,7 +45,7 @@ const currentElapsedTimeUpdater = useIntervalFn(
 // ストップウォッチを開始する関数
 const start = async () => {
   if (!isRunning.value) {
-    await resumeTimer();
+    await commands.resumeTimer();
     resume();
     currentElapsedTimeUpdater.resume();
     isRunning.value = true;
@@ -61,7 +54,7 @@ const start = async () => {
 // ストップウォッチを停止する関数
 const stop = async () => {
   if (isRunning.value) {
-    await pauseTimer();
+    await commands.pauseTimer();
     pause();
     currentElapsedTimeUpdater.pause();
     isRunning.value = false;
