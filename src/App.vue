@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { loadData } from "@/bindings";
+import { commands } from "@/bindings";
 import { listen } from "@tauri-apps/api/event";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -10,7 +10,7 @@ const theme = ref<string | null>(null);
 
 onMounted(async () => {
   const update_theme = async () => {
-    theme.value = (await loadData()).theme;
+    theme.value = (await commands.loadData()).theme;
     document.body.setAttribute("data-theme", theme.value!);
   };
   update_theme();

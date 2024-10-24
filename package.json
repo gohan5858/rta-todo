@@ -11,14 +11,14 @@
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
-    "@tauri-apps/api": "^1",
+    "@tauri-apps/api": "^2.0.3",
     "@vueuse/core": "^11.0.1",
     "vue": "^3.3.4",
     "vue-draggable-plus": "^0.5.3",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1",
+    "@tauri-apps/cli": "^2.0.4",
     "@types/node": "^22.5.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "autoprefixer": "^10.4.20",

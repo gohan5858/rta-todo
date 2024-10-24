@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import {
-  loadData,
-  SaveData,
-  setIsAutoStart,
-  setIsNotificationExceededGoalLapTime,
-  setIsNotificationOfDeadline,
-  setTheme,
-} from "@/bindings";
+import { commands, SaveData } from "@/bindings";
 import KeySettingButton from "@base/KeySettingButton.vue";
 import SettingsNavbar from "@layout/SettingsNavbar.vue";
 import { ref } from "vue";
 
-const data = ref<SaveData>(await loadData());
+const data = ref<SaveData>(await commands.loadData());
 const isAutoStart = ref(data.value.isAutoStart);
 const isNotificationOfDeadline = ref(data.value.isNotificationOfDeadline);
 const isNotificationExceededGoalLapTime = ref(
@@ -39,8 +32,10 @@ const nextTaskKey = ref(["N"]);
                 class="toggle"
                 @change="
                   async () => {
-                    await setIsAutoStart(isAutoStart).catch(console.error);
-                    data = await loadData();
+                    await commands
+                      .setIsAutoStart(isAutoStart)
+                      .catch(console.error);
+                    data = await commands.loadData();
                   }
                 "
               />
@@ -56,8 +51,8 @@ const nextTaskKey = ref(["N"]);
                 @change="
                   async () => {
                     const theme = darkMode ? 'sunset' : 'nord';
-                    await setTheme(theme).catch(console.error);
-                    data = await loadData();
+                    await commands.setTheme(theme).catch(console.error);
+                    data = await commands.loadData();
                   }
                 "
               />
@@ -79,10 +74,10 @@ const nextTaskKey = ref(["N"]);
                 @change="
                   async () => {
                     data.isNotificationOfDeadline = isNotificationOfDeadline;
-                    await setIsNotificationOfDeadline(
-                      isNotificationOfDeadline,
-                    ).catch(console.error);
-                    data = await loadData();
+                    await commands
+                      .setIsNotificationOfDeadline(isNotificationOfDeadline)
+                      .catch(console.error);
+                    data = await commands.loadData();
                   }
                 "
               />
@@ -100,10 +95,12 @@ const nextTaskKey = ref(["N"]);
                   async () => {
                     data.isNotificationExceededGoalLapTime =
                       isNotificationExceededGoalLapTime;
-                    await setIsNotificationExceededGoalLapTime(
-                      isNotificationExceededGoalLapTime,
-                    ).catch(console.error);
-                    data = await loadData();
+                    await commands
+                      .setIsNotificationExceededGoalLapTime(
+                        isNotificationExceededGoalLapTime,
+                      )
+                      .catch(console.error);
+                    data = await commands.loadData();
                   }
                 "
               />

@@ -4,7 +4,7 @@ use std::{
     sync::{LazyLock, Mutex},
     time::Duration,
 };
-use tauri::{api::path::app_data_dir, async_runtime::JoinHandle};
+use tauri::{async_runtime::JoinHandle, Manager};
 use tokio::time;
 
 use crate::save_data::SaveData;
@@ -27,9 +27,13 @@ pub fn initiate_timer(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult
         return Err(anyhow::anyhow!("Failed to acquire current_time lock").into());
     };
 
-    let path = app_data_dir(&app.config())
-        .and_then(|p| p.into_os_string().into_string().ok())
-        .ok_or(anyhow::anyhow!("Failed to get path"))?;
+    let path = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?
+        .into_os_string()
+        .into_string()
+        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
     let save_data = SaveData::load(Path::new(&path))?;
     let previous_time = save_data
         .projects

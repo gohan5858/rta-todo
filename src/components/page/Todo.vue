@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  addTodo,
-  fetchProject,
-  goToNextTodo,
-  removeTodo,
-  setTitle,
-  Todo,
-} from "@/bindings";
+import { commands, Todo } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import TodoNavbar from "@layout/TodoNavbar.vue";
@@ -16,13 +9,13 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const projectId = route.params.projectId as string;
 
-const project = await fetchProject(projectId);
+const project = await commands.fetchProject(projectId);
 
 const title = ref(project.title);
 
 watch(title, async (newTitle) => {
   console.log("title changed", newTitle);
-  await setTitle(projectId, newTitle);
+  await commands.setTitle(projectId, newTitle);
 });
 
 const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
@@ -41,7 +34,7 @@ const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
 const addTodoItem = async () => {
-  [uncheckedTodoList.value, checkedTodoList.value] = await addTodo(
+  [uncheckedTodoList.value, checkedTodoList.value] = await commands.addTodo(
     projectId,
     "新しいタスク",
   );
@@ -54,13 +47,14 @@ const addTodoItem = async () => {
   });
 };
 const removeTodoItem = async () => {
-  uncheckedTodoList.value = await removeTodo(projectId);
+  uncheckedTodoList.value = await commands.removeTodo(projectId);
 };
 const goToNextTask = async (_index: number, _checked: boolean) => {
-  [uncheckedTodoList.value, checkedTodoList.value] = await goToNextTodo(
-    projectId,
-    rtaTimer?.value?.getElapsedTime() ?? 0,
-  );
+  [uncheckedTodoList.value, checkedTodoList.value] =
+    await commands.goToNextTodo(
+      projectId,
+      rtaTimer?.value?.getElapsedTime() ?? 0,
+    );
 };
 </script>
 

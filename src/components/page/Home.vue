@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { addProject, loadData, SaveData } from "@/bindings";
+import { commands, SaveData } from "@/bindings";
 import HomeNavbar from "@layout/HomeNavbar.vue";
 import { computed, ref } from "vue";
 
-const saveData = ref<SaveData>(await loadData());
+const saveData = ref<SaveData>(await commands.loadData());
 const displayCompleted = ref(false);
 
 const projects = computed(() =>
@@ -112,9 +112,12 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
                     return;
                   }
 
-                  await addProject(title, deadline_date + ' ' + deadline_time);
+                  await commands.addProject(
+                    title,
+                    deadline_date + ' ' + deadline_time,
+                  );
                   title = '';
-                  saveData = await loadData();
+                  saveData = await commands.loadData();
                   newTodoPopup?.close();
                 }
               "
