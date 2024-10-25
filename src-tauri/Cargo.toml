@@ -1,20 +1,36 @@
 [package]
 name = "rta-todo"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "An app to complete TODOs with RTA"
+authors = ["gohan5858"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = ["shell-open"] }
+tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+tokio = "1.39.3"
+specta = { version = "2.0.0-rc.20", features = ["uuid", "chrono"] }
+tauri-specta = { version = "2.0.0-rc.20", features = [
+  "derive",
+  "javascript",
+  "typescript",
+] }
+anyhow = "1.0.86"
+anyhow-tauri = "1.0.0"
+uuid = { version = "1.10.0", features = ["v7", "serde"] }
+chrono = { version = "0.4.38", features = ["serde"] }
+tauri-plugin-os = "2"
+specta-typescript = "0.0.7"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
