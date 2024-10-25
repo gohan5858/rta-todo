@@ -374,6 +374,13 @@
     "@tauri-apps/cli-win32-ia32-msvc" "2.0.4"
     "@tauri-apps/cli-win32-x64-msvc" "2.0.4"
 
+"@tauri-apps/plugin-os@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/plugin-os/-/plugin-os-2.0.0.tgz#b174dc0e89dc1bf353b2a9c45cb17e12b014ebd2"
+  integrity sha512-M7hG/nNyQYTJxVG/UhTKhp9mpXriwWzrs9mqDreB8mIgqA3ek5nHLdwRZJWhkKjZrnDT4v9CpA9BhYeplTlAiA==
+  dependencies:
+    "@tauri-apps/api" "^2.0.0"
+
 "@tauri-apps/plugin-updater@~2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tauri-apps/plugin-updater/-/plugin-updater-2.0.0.tgz#38cb3e735da28cd1726a3c0e13f032117e4db111"

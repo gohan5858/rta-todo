@@ -12,6 +12,7 @@
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
     "@tauri-apps/api": "^2.0.3",
+    "@tauri-apps/plugin-os": "^2.0.0",
     "@tauri-apps/plugin-updater": "~2",
     "@vueuse/core": "^11.0.1",
     "vue": "^3.3.4",
