@@ -16,7 +16,7 @@ const projects = computed(() =>
 const newTodoPopup = ref<HTMLDialogElement | null>(null);
 const alertPopup = ref<HTMLDialogElement | null>(null);
 
-const title = "";
+const title = ref("");
 const now = new Date();
 const deadline_date = ref(now.toISOString().split("T")[0]);
 const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
