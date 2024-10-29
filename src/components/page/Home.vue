@@ -16,10 +16,10 @@ const projects = computed(() =>
 const newTodoPopup = ref<HTMLDialogElement | null>(null);
 const alertPopup = ref<HTMLDialogElement | null>(null);
 
-const title = "";
+const title = ref("");
 const now = new Date();
-const deadline_date = now.toISOString().split("T")[0];
-const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
+const deadline_date = ref(now.toISOString().split("T")[0]);
+const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
 </script>
 
 <template>
@@ -128,7 +128,7 @@ const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
         </div>
       </div>
       <form method="dialog" class="modal-backdrop">
-        <button>close</button>
+        <button @click="() => (title = '')">close</button>
       </form>
     </dialog>
     <dialog class="modal" ref="alertPopup">
