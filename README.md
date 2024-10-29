@@ -1,16 +1,52 @@
-# Tauri + Vue + TypeScript
+<h1 align="center">RTA-Todo</h1>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+<p align="center">
+  <img src="src-tauri/icons/128x128.png" alt="Project Banner">
+</p>
 
-## Recommended IDE Setup
+<p align="center">
+  <strong>
+  This is an application for completing Todos in RTA (Real-Time Attack) format.
+  </strong>
+</p>
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+<p align="center">
+  <a href="https://github.com/gohan5858/rta-todo/releases">
+    <img src="https://img.shields.io/github/v/release/gohan5858/rta-todo" alt="Release">
+  </a>
+  <a href="https://github.com/gohan5858/rta-todo/issues">
+    <img src="https://img.shields.io/github/issues/gohan5858/rta-todo" alt="Issues">
+  </a>
+</p>
 
-## Type Support For `.vue` Imports in TS
+---
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+<h2 align="center">🌈 Demo</h2>
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+<p align="center">
+  <img src="public/rta-todo-demo.gif" alt="Demo Gif" width="50%">
+</p>
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+---
+
+## 🎯 Features
+
+<ul style="font-size: 1.2em;">
+  <li><strong>Real-Time Attack (RTA) format</strong> - This application is for completing Todos in RTA format.</li>
+  <li><strong>Simple and easy to use</strong> - You can easily add, delete, and complete Todos.</li>
+  <li><strong>Dark mode</strong> - You can switch between light and dark mode.</li>
+  <li><strong>Responsive design</strong> - This application is responsive and can be used on any device.</li>
+</ul>
+
+---
+
+## 🚀 Getting Started
+
+You can download this app from the [releases page]("https://github.com/gohan5858/rta-todo/releases")
+This application has an auto-updater, so you don't need to install the new version by yourself.
+
+### Supported platforms
+
+- Windows
+- MacOS
+- Linux
