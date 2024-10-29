@@ -18,8 +18,8 @@ const alertPopup = ref<HTMLDialogElement | null>(null);
 
 const title = "";
 const now = new Date();
-const deadline_date = now.toISOString().split("T")[0];
-const deadline_time = now.toTimeString().split(":").slice(0, 2).join(":");
+const deadline_date = ref(now.toISOString().split("T")[0]);
+const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
 </script>
 
 <template>
