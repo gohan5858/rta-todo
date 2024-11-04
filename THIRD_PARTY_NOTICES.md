@@ -1,5 +1,5 @@
 
-# Third-Party Licenses
+# Third Party Notices
 
 ## [@phosphor-icons/vue](https://www.npmjs.com/package/@phosphor-icons/vue)
 
