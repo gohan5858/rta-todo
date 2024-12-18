@@ -44,7 +44,10 @@ fn main() {
         ]);
     #[cfg(debug_assertions)]
     builder
-        .export(Typescript::default(), "../src/bindings.ts")
+        .export(
+            Typescript::default().header("// @ts-nocheck\n"),
+            "../src/bindings.ts",
+        )
         .expect("Failed to export typescript bindings");
 
     tauri::Builder::default()
