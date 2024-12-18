@@ -36,6 +36,7 @@ fn main() {
             fetch_project,
             add_todo,
             remove_todo,
+            update_todo_item_title,
             go_to_next_todo,
             update_current_elapsed_time,
             get_current_elapsed_time,
@@ -43,7 +44,10 @@ fn main() {
         ]);
     #[cfg(debug_assertions)]
     builder
-        .export(Typescript::default(), "../src/bindings.ts")
+        .export(
+            Typescript::default().header("// @ts-nocheck\n"),
+            "../src/bindings.ts",
+        )
         .expect("Failed to export typescript bindings");
 
     tauri::Builder::default()
