@@ -43,7 +43,8 @@
         "minHeight": 400,
         "width": 500,
         "height": 700,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "dragDropEnabled": false
       }
     ]
   }
