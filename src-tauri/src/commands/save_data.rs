@@ -289,43 +289,35 @@ pub fn go_to_next_todo(
         .find(|p| p.id == project_id)
         .ok_or(anyhow::anyhow!("Failed to find project"))?;
 
-    let (mut unchecked_todo_list, mut checked_todo_list): (VecDeque<Todo>, Vec<Todo>) = {
-        let (unchecked, checked): (Vec<Todo>, Vec<Todo>) = target_project
-            .todo_list
-            .clone()
-            .into_iter()
-            .partition(|t| !t.checked);
-        (unchecked.into(), checked)
-    };
+    let mut todo_list_iter = target_project.todo_list.iter_mut();
+    while let Some(todo) = todo_list_iter.next() {
+        if todo.checked && todo.checkable {
+            todo.checkable = false;
+            todo.lap_time = Some(lap_time);
+            todo.elapsed_time = Some(lap_time / 1000 / 60);
 
-    let previous_todo_lap_time = checked_todo_list.last().and_then(|t| t.lap_time);
+            if let Some(t) = todo_list_iter.next() {
+                t.checkable = true;
+            }
 
-    let target_todo_elapsed_time = lap_time - previous_todo_lap_time.unwrap_or(0);
-
-    if let Some(mut target_todo) = unchecked_todo_list.pop_front() {
-        target_todo.lap_time = Some(lap_time);
-        // ミリ秒から分に変換
-        let target_todo_elapsed_time_min = target_todo_elapsed_time / 1000 / 60;
-        target_todo.elapsed_time = Some(target_todo_elapsed_time_min);
-        target_todo.checked = true;
-        target_todo.checkable = false;
-        checked_todo_list.push(target_todo);
-    };
-
-    // popした後なので次のtodoがあれば最初の要素が次のtodo
-    if let Some(next_todo) = unchecked_todo_list.front_mut() {
-        next_todo.checkable = true;
+            break;
+        }
     }
 
-    target_project.todo_list = checked_todo_list
-        .clone()
-        .into_iter()
-        .chain(unchecked_todo_list.clone().into_iter())
-        .collect();
-
-    SaveData::save(save_data, Path::new(&path))?;
-
-    Ok((unchecked_todo_list.into(), checked_todo_list))
+    Ok((
+        target_project
+            .todo_list
+            .iter()
+            .filter(|t| !t.checked)
+            .cloned()
+            .collect(),
+        target_project
+            .todo_list
+            .iter()
+            .filter(|t| t.checked)
+            .cloned()
+            .collect(),
+    ))
 }
 
 #[tauri::command]
