@@ -236,6 +236,39 @@ pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<Ve
 
 #[tauri::command]
 #[specta::specta]
+pub fn update_todo_item_title(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    checked_todo_list: Vec<Todo>,
+    unchecked_todo_list: Vec<Todo>,
+) -> TAResult<()> {
+    let path = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?
+        .into_os_string()
+        .into_string()
+        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+
+    let target_project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    target_project.todo_list = checked_todo_list
+        .into_iter()
+        .chain(unchecked_todo_list)
+        .collect();
+
+    SaveData::save(save_data, Path::new(&path))?;
+
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn go_to_next_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,
