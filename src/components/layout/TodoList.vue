@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Todo } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
+import { PhDotsSixVertical } from "@phosphor-icons/vue";
 import { SortableEvent, VueDraggable } from "vue-draggable-plus";
 
 const emit = defineEmits<{
@@ -52,13 +53,17 @@ const onSortedTodoList = (e: SortableEvent) => {
     <VueDraggable
       v-model="uncheckedTodoList"
       :animation="150"
+      handle="#handle"
       :onEnd="(e) => onSortedTodoList(e)"
     >
-      <TodoListItem
-        v-for="(_, index) in uncheckedTodoList"
-        @checked-todo="(checked) => emit('checkedTodo', index, checked)"
-        v-model:todo-list-item="uncheckedTodoList[index]"
-      />
+      <div v-for="(_, index) in uncheckedTodoList" class="flex flex-row gap-3">
+        <TodoListItem
+          class="flex-grow"
+          @checked-todo="(checked) => emit('checkedTodo', index, checked)"
+          v-model:todo-list-item="uncheckedTodoList[index]"
+        />
+        <PhDotsSixVertical id="handle" class="cursor-move" :size="32" />
+      </div>
     </VueDraggable>
   </div>
 </template>
