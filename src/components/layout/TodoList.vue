@@ -50,7 +50,6 @@ const onSortedTodoList = (e: SortableEvent) => {
       v-model:todo-list-item="checkedTodoList[index]"
     />
     <VueDraggable
-      ref="el"
       v-model="uncheckedTodoList"
       :animation="150"
       :onEnd="(e) => onSortedTodoList(e)"
