@@ -30,6 +30,29 @@ const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
   [ref([]), ref([])] as [Ref<Todo[]>, Ref<Todo[]>],
 );
 
+watch(
+  checkedTodoList,
+  async (newCheckedTodoList) => {
+    await commands.updateTodoItemTitle(
+      projectId,
+      newCheckedTodoList,
+      uncheckedTodoList.value,
+    );
+  },
+  { deep: true },
+);
+watch(
+  uncheckedTodoList,
+  async (newUncheckedTodoList) => {
+    await commands.updateTodoItemTitle(
+      projectId,
+      checkedTodoList.value,
+      newUncheckedTodoList,
+    );
+  },
+  { deep: true },
+);
+
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
