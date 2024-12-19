@@ -27,26 +27,50 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
     <div class="flex flex-grow flex-col gap-5">
       <!-- TODO list -->
       <div class="relative flex-grow">
-        <div class="absolute flex h-full w-full flex-col overflow-auto">
-          <div class="flex flex-col gap-2">
-            <RouterLink
-              class="flex"
-              v-for="project in projects"
-              :key="project.id"
-              :to="{
-                name: 'todo',
-                params: { projectId: project.id },
-              }"
-            >
-              <div class="btn flex-grow text-xl">
-                {{ project.title }}
-              </div>
-            </RouterLink>
-          </div>
+        <div
+          class="absolute flex h-full w-full flex-col items-center overflow-auto"
+        >
+          <table class="table w-5/6">
+            <tbody>
+              <tr v-for="project in projects" class="hover w-full">
+                <th>
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    @input="
+                      async (e) => {
+                        await commands.setIsCompleteProject(
+                          project.id,
+                          !project.completed,
+                        );
+                        // チェックボックスの非チェック状態にする
+                        if (e.target) {
+                          (e.target as HTMLInputElement).checked = false;
+                        }
+                        saveData = await commands.loadData();
+                      }
+                    "
+                  />
+                </th>
+                <td class="text-xl">
+                  <RouterLink
+                    class="flex"
+                    :key="project.id"
+                    :to="{
+                      name: 'todo',
+                      params: { projectId: project.id },
+                    }"
+                    >{{ project.title }}
+                  </RouterLink>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
       <!-- Add new TODO button -->
-      <div class="flex flex-row items-center justify-center">
+      <div class="absolute bottom-5 right-10">
         <button
           @click="
             () => {
@@ -61,7 +85,7 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
             }
           "
           v-if="!displayCompleted"
-          class="btn bg-orange-400 text-xl text-black hover:bg-orange-500"
+          class="btn btn-lg bg-orange-400 text-xl text-black hover:bg-orange-500"
         >
           +
         </button>
@@ -142,3 +166,14 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
     </dialog>
   </HomeNavbar>
 </template>
+
+<style scoped>
+.scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar::-webkit-scrollbar {
+  display: none;
+}
+</style>
