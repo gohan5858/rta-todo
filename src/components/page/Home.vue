@@ -34,7 +34,23 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
             <tbody>
               <tr v-for="project in projects" class="hover w-full">
                 <th>
-                  <input type="checkbox" class="checkbox" />
+                  <input
+                    type="checkbox"
+                    class="checkbox"
+                    @input="
+                      async (e) => {
+                        await commands.setIsCompleteProject(
+                          project.id,
+                          !project.completed,
+                        );
+                        // チェックボックスの非チェック状態にする
+                        if (e.target) {
+                          (e.target as HTMLInputElement).checked = false;
+                        }
+                        saveData = await commands.loadData();
+                      }
+                    "
+                  />
                 </th>
                 <td class="text-xl">
                   <RouterLink
