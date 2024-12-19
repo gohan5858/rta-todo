@@ -1,6 +1,6 @@
 use crate::save_data::{Project, SaveData, Todo};
 use anyhow_tauri::TAResult;
-use std::{collections::VecDeque, path::Path};
+use std::path::Path;
 use tauri::{Emitter, Manager};
 
 #[tauri::command]
@@ -230,7 +230,7 @@ pub fn add_todo(
         lap_time: None,
         elapsed_time: None,
         checked: false,
-        checkable: project.todo_list.len() == 0 || project.todo_list.iter().all(|t| !t.checkable),
+        checkable: project.todo_list.is_empty() || project.todo_list.iter().all(|t| !t.checkable),
         branch_name: None,
     };
     project.todo_list.push(new_todo);
