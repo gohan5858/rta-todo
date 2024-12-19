@@ -36,6 +36,9 @@ async setIsNotificationOfDeadline(isNotificationOfDeadline: boolean) : Promise<n
 async setIsNotificationExceededGoalLapTime(isNotificationExceededGoalLapTime: boolean) : Promise<null> {
     return await TAURI_INVOKE("set_is_notification_exceeded_goal_lap_time", { isNotificationExceededGoalLapTime });
 },
+async setIsCompleteProject(projectId: string, isComplete: boolean) : Promise<null> {
+    return await TAURI_INVOKE("set_is_complete_project", { projectId, isComplete });
+},
 async addProject(title: string, deadline: string | null) : Promise<null> {
     return await TAURI_INVOKE("add_project", { title, deadline });
 },

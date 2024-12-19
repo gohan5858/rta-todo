@@ -119,6 +119,32 @@ pub fn set_is_notification_exceeded_goal_lap_time(
 
 #[tauri::command]
 #[specta::specta]
+pub fn set_is_complete_project(
+    app: tauri::AppHandle,
+    project_id: uuid::Uuid,
+    is_complete: bool,
+) -> TAResult<()> {
+    let path = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?
+        .into_os_string()
+        .into_string()
+        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+    let project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+    project.completed = is_complete;
+
+    SaveData::save(save_data, Path::new(&path))?;
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String>) -> TAResult<()> {
     let deadline = deadline
         .and_then(|d| chrono::DateTime::parse_from_str(&d, "%Y-%m-%d %H:%M").ok())

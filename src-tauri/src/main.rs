@@ -32,6 +32,7 @@ fn main() {
             set_is_auto_start,
             set_is_notification_of_deadline,
             set_is_notification_exceeded_goal_lap_time,
+            set_is_complete_project,
             add_project,
             fetch_project,
             add_todo,
