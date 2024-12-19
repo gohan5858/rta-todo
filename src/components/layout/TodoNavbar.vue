@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import ComingSoonBoard from "@base/ComingSoonBoard.vue";
-import { PhCaretDoubleLeft, PhList } from "@phosphor-icons/vue";
+import { commands } from "@/bindings";
+import { PhCaretDoubleLeft, PhList, PhTrashSimple } from "@phosphor-icons/vue";
+const props = defineProps<{
+  projectId: string;
+}>();
 const title = defineModel<string>({ required: true });
 </script>
 
@@ -24,9 +27,22 @@ const title = defineModel<string>({ required: true });
         </div>
         <ul
           tabindex="0"
-          class="menu dropdown-content z-[1] w-52 rounded-box bg-base-200 p-2 shadow"
+          class="menu dropdown-content z-[1] w-52 rounded-box p-2 backdrop-blur-sm"
         >
-          <ComingSoonBoard />
+          <li>
+            <button
+              class="btn btn-ghost flex flex-row gap-2"
+              @click="
+                async () => {
+                  await commands.removeProject(props.projectId);
+                  $router.back();
+                }
+              "
+            >
+              <PhTrashSimple />
+              <span>プロジェクトを削除</span>
+            </button>
+          </li>
         </ul>
       </div>
     </div>
