@@ -83,7 +83,7 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
 
 <template>
   <div class="grid grid-cols-1 grid-rows-[1fr_7fr_2fr] gap-2">
-    <TodoNavbar v-model="title" />
+    <TodoNavbar :project-id="project.id" v-model="title" />
     <div ref="todoListArea" class="flex flex-col gap-5 overflow-auto p-2">
       <TodoList
         @checked-todo="(index, checked) => goToNextTask(index, checked)"
