@@ -190,6 +190,22 @@ pub fn fetch_project(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<
 
 #[tauri::command]
 #[specta::specta]
+pub fn remove_project(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<()> {
+    let path = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?
+        .into_os_string()
+        .into_string()
+        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+    save_data.projects.retain(|p| p.id != project_id);
+    SaveData::save(save_data, Path::new(&path))?;
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn add_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,

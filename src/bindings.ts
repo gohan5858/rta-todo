@@ -45,6 +45,9 @@ async addProject(title: string, deadline: string | null) : Promise<null> {
 async fetchProject(projectId: string) : Promise<Project> {
     return await TAURI_INVOKE("fetch_project", { projectId });
 },
+async removeProject(projectId: string) : Promise<null> {
+    return await TAURI_INVOKE("remove_project", { projectId });
+},
 async addTodo(projectId: string, title: string) : Promise<[Todo[], Todo[]]> {
     return await TAURI_INVOKE("add_todo", { projectId, title });
 },

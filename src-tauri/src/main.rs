@@ -35,6 +35,7 @@ fn main() {
             set_is_complete_project,
             add_project,
             fetch_project,
+            remove_project,
             add_todo,
             remove_todo,
             update_todo_item_title,
