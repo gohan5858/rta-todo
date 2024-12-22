@@ -48,17 +48,17 @@ async fetchProject(projectId: string) : Promise<Project> {
 async removeProject(projectId: string) : Promise<null> {
     return await TAURI_INVOKE("remove_project", { projectId });
 },
-async addTodo(projectId: string, title: string) : Promise<[Todo[], Todo[]]> {
-    return await TAURI_INVOKE("add_todo", { projectId, title });
+async addTodo(projectId: string) : Promise<TodoList> {
+    return await TAURI_INVOKE("add_todo", { projectId });
 },
-async removeTodo(projectId: string) : Promise<Todo[]> {
+async removeTodo(projectId: string) : Promise<TodoList> {
     return await TAURI_INVOKE("remove_todo", { projectId });
 },
-async updateTodoItemTitle(projectId: string, checkedTodoList: Todo[], uncheckedTodoList: Todo[]) : Promise<null> {
-    return await TAURI_INVOKE("update_todo_item_title", { projectId, checkedTodoList, uncheckedTodoList });
+async updateTodoItemTitle(projectId: string, todoList: TodoList) : Promise<null> {
+    return await TAURI_INVOKE("update_todo_item_title", { projectId, todoList });
 },
-async goToNextTodo(projectId: string, lapTime: number) : Promise<[Todo[], Todo[]]> {
-    return await TAURI_INVOKE("go_to_next_todo", { projectId, lapTime });
+async goToNextTodo(projectId: string, parentId: string | null) : Promise<TodoList> {
+    return await TAURI_INVOKE("go_to_next_todo", { projectId, parentId });
 },
 async updateCurrentElapsedTime(projectId: string, currentElapsedTime: number) : Promise<null> {
     return await TAURI_INVOKE("update_current_elapsed_time", { projectId, currentElapsedTime });
@@ -81,9 +81,10 @@ async resetCurrentElapsedTime() : Promise<null> {
 
 /** user-defined types **/
 
-export type Project = { id: string; title: string; deadline: string | null; currentElapsedTime: number; completed: boolean; todoList: Todo[] }
+export type Project = { id: string; title: string; deadline: string | null; currentElapsedTime: number; completed: boolean; todoList: TodoList }
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }
-export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; checked: boolean; checkable: boolean; branchName: string | null }
+export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; branchName: string | null; subTodoList: TodoList }
+export type TodoList = { checked_todos: Todo[]; unchecked_todos: Todo[] }
 
 /** tauri-specta globals **/
 

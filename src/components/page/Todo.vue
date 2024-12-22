@@ -1,66 +1,27 @@
 <script setup lang="ts">
-import { commands, Todo } from "@/bindings";
+import { commands } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoList from "@layout/TodoList.vue";
 import TodoNavbar from "@layout/TodoNavbar.vue";
-import { nextTick, Ref, ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const projectId = route.params.projectId as string;
 
-const project = await commands.fetchProject(projectId);
+const project = ref(await commands.fetchProject(projectId));
 
-const title = ref(project.title);
+const title = ref(project.value.title);
 
 watch(title, async (newTitle) => {
-  console.log("title changed", newTitle);
   await commands.setTitle(projectId, newTitle);
 });
-
-const [uncheckedTodoList, checkedTodoList] = project.todoList.reduce(
-  ([unchecked, checked], todo) => {
-    if (todo.checked) {
-      checked.value.push(todo);
-    } else {
-      unchecked.value.push(todo);
-    }
-    return [unchecked, checked];
-  },
-  [ref([]), ref([])] as [Ref<Todo[]>, Ref<Todo[]>],
-);
-
-watch(
-  checkedTodoList,
-  async (newCheckedTodoList) => {
-    await commands.updateTodoItemTitle(
-      projectId,
-      newCheckedTodoList,
-      uncheckedTodoList.value,
-    );
-  },
-  { deep: true },
-);
-watch(
-  uncheckedTodoList,
-  async (newUncheckedTodoList) => {
-    await commands.updateTodoItemTitle(
-      projectId,
-      checkedTodoList.value,
-      newUncheckedTodoList,
-    );
-  },
-  { deep: true },
-);
 
 const rtaTimer = ref<InstanceType<typeof RTATimer> | null>();
 const todoListArea = ref<HTMLElement>();
 
 const addTodoItem = async () => {
-  [uncheckedTodoList.value, checkedTodoList.value] = await commands.addTodo(
-    projectId,
-    "新しいタスク",
-  );
+  project.value.todoList = await commands.addTodo(projectId);
 
   // DOMの更新を待ってからスクロールする
   await nextTick();
@@ -70,14 +31,10 @@ const addTodoItem = async () => {
   });
 };
 const removeTodoItem = async () => {
-  uncheckedTodoList.value = await commands.removeTodo(projectId);
+  project.value.todoList = await commands.removeTodo(projectId);
 };
-const goToNextTask = async (_index: number, _checked: boolean) => {
-  [uncheckedTodoList.value, checkedTodoList.value] =
-    await commands.goToNextTodo(
-      projectId,
-      rtaTimer?.value?.getElapsedTime() ?? 0,
-    );
+const goToNextTodo = async (parentId: string | null) => {
+  project.value.todoList = await commands.goToNextTodo(projectId, parentId);
 };
 </script>
 
@@ -86,9 +43,13 @@ const goToNextTask = async (_index: number, _checked: boolean) => {
     <TodoNavbar :project-id="project.id" v-model="title" />
     <div ref="todoListArea" class="flex flex-col gap-5 overflow-auto p-2">
       <TodoList
-        @checked-todo="(index, checked) => goToNextTask(index, checked)"
-        v-model:checked-todo-list="checkedTodoList"
-        v-model:unchecked-todo-list="uncheckedTodoList"
+        :todo-list="project.todoList"
+        @check-todo="async (parentId) =>  await goToNextTodo(parentId)"
+        @update-todo-title="
+          async (todoList) => {
+            await commands.updateTodoItemTitle(projectId, todoList);
+          }
+        "
       />
       <div class="flex flex-row">
         <div

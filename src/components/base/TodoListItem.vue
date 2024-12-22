@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { Todo } from "@/bindings";
 
-const todoListItem = defineModel<Todo>("todoListItem", {
-  required: true,
-});
+const props = defineProps<{
+  todoListItem: Todo;
+  checkable: boolean;
+  checked: boolean;
+}>();
 const emit = defineEmits<{
-  checkedTodo: [checked: boolean];
+  checkTodo: [];
+  updateTitle: [title: string];
 }>();
 </script>
 
@@ -15,16 +18,30 @@ const emit = defineEmits<{
       <div class="flex flex-row items-center gap-2">
         <input
           type="checkbox"
-          :disabled="!todoListItem?.checkable"
           class="checkbox-primary checkbox"
-          @change="emit('checkedTodo', todoListItem.checked)"
-          v-model="todoListItem.checked"
+          :disabled="!props.checkable"
+          :checked="props.checked"
+          @change="
+            (e) => {
+              const target = e.target as HTMLInputElement;
+              if (target && target.checked) {
+                emit('checkTodo');
+                target.checked = false;
+              }
+            }
+          "
         />
         <input
           type="text"
           placeholder="Todo Title"
           class="input input-sm input-ghost w-2/4 flex-grow"
-          v-model="todoListItem.title"
+          :value="props.todoListItem.title"
+          @input="
+            (e) => {
+              const target = e.target as HTMLInputElement;
+              emit('updateTitle', target.value);
+            }
+          "
         />
         <div class="h-1/4 whitespace-nowrap text-base">
           {{
