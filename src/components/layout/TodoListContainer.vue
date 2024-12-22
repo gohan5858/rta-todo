@@ -16,16 +16,36 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
-    <TodoListItem
-      class="pr-7"
+  <div class="flex flex-col gap-4">
+    <div
+      class="flex flex-col gap-5"
       v-for="checkedTodo in props.todoList.checked_todos"
-      :todo-list-item="checkedTodo"
-      :checkable="false"
-      :checked="true"
-    />
+    >
+      <TodoListItem
+        class="pr-7"
+        :todo-list-item="checkedTodo"
+        :checkable="false"
+        :checked="true"
+      />
+      <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
+        <TodoListItem
+          class="pl-4 pr-7"
+          :todo-list-item="subTodo"
+          :checkable="false"
+          :checked="true"
+        />
+      </div>
+      <div v-for="subTodo in checkedTodo.subTodoList.unchecked_todos">
+        <TodoListItem
+          class="pl-4 pr-7"
+          :todo-list-item="subTodo"
+          :checkable="false"
+          :checked="false"
+        />
+      </div>
+    </div>
     <VueDraggable
-      class="min-h-4"
+      class="flex flex-col gap-4"
       :model-value="props.todoList.unchecked_todos"
       @update:model-value="
         (unchecked_todos: Todo[]) => {
@@ -40,6 +60,7 @@ const props = defineProps<{
       <div
         v-for="(uncheckedTodo, index) in props.todoList.unchecked_todos"
         :key="uncheckedTodo.id"
+        class="flex flex-col gap-5"
       >
         <div class="flex flex-row gap-1">
           <TodoListItem
