@@ -43,11 +43,13 @@ const goToNextTodo = async (parentId: string | null) => {
     <TodoNavbar :project-id="project.id" v-model="title" />
     <div ref="todoListArea" class="flex flex-col gap-5 overflow-auto p-2">
       <TodoListContainer
+        :max-nest-level="1"
         :todo-list="project.todoList"
         @check-todo="async (parentId) => await goToNextTodo(parentId)"
-        @update-todo-title="
+        @update-todo-list="
           async (todoList) => {
-            await commands.updateTodoItemTitle(projectId, todoList);
+            await commands.updateTodoList(projectId, todoList);
+            project.todoList = todoList;
           }
         "
       />

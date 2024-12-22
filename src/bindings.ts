@@ -54,8 +54,8 @@ async addTodo(projectId: string) : Promise<TodoList> {
 async removeTodo(projectId: string) : Promise<TodoList> {
     return await TAURI_INVOKE("remove_todo", { projectId });
 },
-async updateTodoItemTitle(projectId: string, todoList: TodoList) : Promise<null> {
-    return await TAURI_INVOKE("update_todo_item_title", { projectId, todoList });
+async updateTodoList(projectId: string, todoList: TodoList) : Promise<null> {
+    return await TAURI_INVOKE("update_todo_list", { projectId, todoList });
 },
 async goToNextTodo(projectId: string, parentId: string | null) : Promise<TodoList> {
     return await TAURI_INVOKE("go_to_next_todo", { projectId, parentId });

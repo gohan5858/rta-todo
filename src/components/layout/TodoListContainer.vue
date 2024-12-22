@@ -1,52 +1,81 @@
 <script setup lang="ts">
-import { TodoList } from "@/bindings";
+import { Todo, TodoList } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
 import { PhDotsSixVertical } from "@phosphor-icons/vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 const emit = defineEmits<{
   checkTodo: [parentId: string | null];
-  updateTodoTitle: [todoList: TodoList];
+  updateTodoList: [todoList: TodoList];
 }>();
 
 const props = defineProps<{
   todoList: TodoList;
+  maxNestLevel: number;
 }>();
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
     <TodoListItem
+      class="mx-4"
       v-for="checkedTodo in props.todoList.checked_todos"
       :todo-list-item="checkedTodo"
       :checkable="false"
       :checked="true"
     />
     <VueDraggable
-      tag="ul"
-      v-model="props.todoList.unchecked_todos"
+      class="min-h-4 px-4"
+      :model-value="props.todoList.unchecked_todos"
+      @update:model-value="
+        (unchecked_todos: Todo[]) => {
+          props.todoList.unchecked_todos = unchecked_todos;
+          emit('updateTodoList', props.todoList);
+        }
+      "
+      group="todoList"
       :animation="150"
       handle="#handle"
     >
-      <li
+      <div
         v-for="(uncheckedTodo, index) in props.todoList.unchecked_todos"
-        class="flex flex-row gap-3"
+        :key="uncheckedTodo.id"
       >
-        <TodoListItem
-          class="flex-grow"
-          :todo-list-item="uncheckedTodo"
-          :checkable="index === 0"
-          :checked="false"
-          @check-todo="() => emit('checkTodo', null)"
-          @update-title="
-            (title) => {
-              props.todoList.unchecked_todos[index].title = title;
-              emit('updateTodoTitle', props.todoList);
+        <div class="flex flex-row gap-1">
+          <TodoListItem
+            class="flex-grow"
+            :todo-list-item="uncheckedTodo"
+            :checkable="index === 0"
+            :checked="false"
+            @check-todo="
+              () =>
+                emit(
+                  'checkTodo',
+                  props.maxNestLevel == 1 ? null : uncheckedTodo.id,
+                )
+            "
+            @update-title="
+              (title) => {
+                props.todoList.unchecked_todos[index].title = title;
+                emit('updateTodoList', props.todoList);
+              }
+            "
+          />
+          <PhDotsSixVertical id="handle" class="cursor-move" :size="32" />
+        </div>
+        <TodoListContainer
+          v-if="props.maxNestLevel > 0"
+          :todo-list="uncheckedTodo.subTodoList"
+          :max-nest-level="props.maxNestLevel - 1"
+          @check-todo="async (parentId) => emit('checkTodo', parentId)"
+          @update-todo-list="
+            (todoList: TodoList) => {
+              props.todoList.unchecked_todos[index].subTodoList = todoList;
+              emit('updateTodoList', props.todoList);
             }
           "
         />
-        <PhDotsSixVertical id="handle" class="cursor-move" :size="32" />
-      </li>
+      </div>
     </VueDraggable>
   </div>
 </template>

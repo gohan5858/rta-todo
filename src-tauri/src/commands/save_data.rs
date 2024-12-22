@@ -256,7 +256,7 @@ pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<To
 
 #[tauri::command]
 #[specta::specta]
-pub fn update_todo_item_title(
+pub fn update_todo_list(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,
     todo_list: TodoList,

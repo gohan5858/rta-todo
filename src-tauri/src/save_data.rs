@@ -93,13 +93,15 @@ impl TodoList {
         self.unchecked_todos.pop_back();
     }
     pub fn go_to_next_todo(&mut self, parent_todo_id: Option<uuid::Uuid>) -> TodoList {
-        if let Some(parent_todo_id) = parent_todo_id {
-            self.unchecked_todos
-                .iter_mut()
-                .find(|todo| todo.id == parent_todo_id)
+        if parent_todo_id.is_some() {
+            let sub_todo_list = &mut self
+                .unchecked_todos
+                .front_mut()
                 .expect("parent_todo_id not found")
-                .sub_todo_list
-                .go_to_next_todo(None);
+                .sub_todo_list;
+            if let Some(todo) = sub_todo_list.unchecked_todos.pop_front() {
+                sub_todo_list.checked_todos.push(todo);
+            }
         } else if let Some(todo) = self.unchecked_todos.pop_front() {
             self.checked_todos.push(todo);
         }
