@@ -52,14 +52,15 @@ const emit = defineEmits<{
           / {{ todoListItem?.elapsedTime?.toString() || "--" }} 分
         </div>
       </div>
-      <div class="flex justify-end">
+      <!-- TODO: Git連携ができるようになったら復活させる -->
+      <!-- <div class="flex justify-end">
         <input
           v-if="todoListItem?.branchName !== undefined"
           type="text"
           class="input input-xs input-ghost w-48 text-right text-xs text-slate-400"
           :value="todoListItem?.branchName"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
