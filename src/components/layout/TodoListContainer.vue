@@ -18,14 +18,14 @@ const props = defineProps<{
 <template>
   <div class="flex flex-col gap-1">
     <TodoListItem
-      class="mx-4"
+      class="pr-7"
       v-for="checkedTodo in props.todoList.checked_todos"
       :todo-list-item="checkedTodo"
       :checkable="false"
       :checked="true"
     />
     <VueDraggable
-      class="min-h-4 px-4"
+      class="min-h-4"
       :model-value="props.todoList.unchecked_todos"
       @update:model-value="
         (unchecked_todos: Todo[]) => {
@@ -61,9 +61,16 @@ const props = defineProps<{
               }
             "
           />
-          <PhDotsSixVertical id="handle" class="cursor-move" :size="32" />
+          <div class="flex items-center">
+            <PhDotsSixVertical
+              id="handle"
+              class="cursor-ns-resize"
+              :size="24"
+            />
+          </div>
         </div>
         <TodoListContainer
+          class="pl-4"
           v-if="props.maxNestLevel > 0"
           :todo-list="uncheckedTodo.subTodoList"
           :max-nest-level="props.maxNestLevel - 1"
