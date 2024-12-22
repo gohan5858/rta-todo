@@ -37,7 +37,7 @@ pub fn run() {
             remove_project,
             add_todo,
             remove_todo,
-            update_todo_item_title,
+            update_todo_list,
             go_to_next_todo,
             update_current_elapsed_time,
             get_current_elapsed_time,
