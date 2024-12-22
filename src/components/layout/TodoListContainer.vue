@@ -12,7 +12,6 @@ const emit = defineEmits<{
 const props = defineProps<{
   todoList: TodoList;
 }>();
-
 </script>
 
 <template>

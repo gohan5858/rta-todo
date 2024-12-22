@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { commands } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
-import TodoList from "@layout/TodoList.vue";
+import TodoListContainer from "@layout/TodoListContainer.vue";
 import TodoNavbar from "@layout/TodoNavbar.vue";
 import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -42,9 +42,9 @@ const goToNextTodo = async (parentId: string | null) => {
   <div class="grid grid-cols-1 grid-rows-[1fr_7fr_2fr] gap-2">
     <TodoNavbar :project-id="project.id" v-model="title" />
     <div ref="todoListArea" class="flex flex-col gap-5 overflow-auto p-2">
-      <TodoList
+      <TodoListContainer
         :todo-list="project.todoList"
-        @check-todo="async (parentId) =>  await goToNextTodo(parentId)"
+        @check-todo="async (parentId) => await goToNextTodo(parentId)"
         @update-todo-title="
           async (todoList) => {
             await commands.updateTodoItemTitle(projectId, todoList);
