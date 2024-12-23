@@ -114,6 +114,8 @@ impl TodoList {
                 todo.elapsed_time = Some(
                     (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0)) / 1000 / 60,
                 );
+            } else {
+                todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
             }
 
             self.checked_todos.push(todo);
