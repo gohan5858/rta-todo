@@ -111,8 +111,6 @@ impl TodoList {
             };
 
             if let Some(before_todo) = self.checked_todos.last() {
-                dbg!(before_todo.lap_time);
-                dbg!(todo.lap_time);
                 todo.elapsed_time = Some(
                     (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0)) / 1000 / 60,
                 );
