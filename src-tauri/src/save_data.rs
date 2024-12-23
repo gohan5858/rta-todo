@@ -101,7 +101,22 @@ impl TodoList {
                 .front_mut()
                 .expect("parent_todo_id not found")
                 .sub_todo_list;
-            if let Some(todo) = sub_todo_list.unchecked_todos.pop_front() {
+            if let Some(mut todo) = sub_todo_list.unchecked_todos.pop_front() {
+                todo.lap_time = match get_current_time() {
+                    Ok(time) => Some(time as i32),
+                    Err(_) => None,
+                };
+
+                if let Some(before_todo) = sub_todo_list.checked_todos.last() {
+                    todo.elapsed_time = Some(
+                        (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0))
+                            / 1000
+                            / 60,
+                    );
+                } else {
+                    todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
+                }
+
                 sub_todo_list.checked_todos.push(todo);
             }
         } else if let Some(mut todo) = self.unchecked_todos.pop_front() {
@@ -111,11 +126,11 @@ impl TodoList {
             };
 
             if let Some(before_todo) = self.checked_todos.last() {
-                dbg!(before_todo.lap_time);
-                dbg!(todo.lap_time);
                 todo.elapsed_time = Some(
                     (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0)) / 1000 / 60,
                 );
+            } else {
+                todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
             }
 
             self.checked_todos.push(todo);
