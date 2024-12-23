@@ -23,6 +23,8 @@
   "identifier": "com.gohan.rta-todo",
   "plugins": {
     "updater": {
+      "active": true,
+      "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5OTAxRTcxNjY0REI0OTUKUldTVnRFMW1jUjZRdWRKV2ZuT2lQUFJaS1hoRHM0TUY4c1NjeXFoMEFHZFppVldRQ0UwNWVXRVgK",
       "endpoints": [
         "https://github.com/gohan5858/rta-todo/releases/latest/download/latest.json"
