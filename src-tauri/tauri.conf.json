@@ -19,7 +19,7 @@
   },
   "productName": "rta-todo",
   "mainBinaryName": "rta-todo",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "identifier": "com.gohan.rta-todo",
   "plugins": {
     "updater": {
