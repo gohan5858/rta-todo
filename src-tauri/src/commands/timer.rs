@@ -4,7 +4,7 @@ use std::{
     sync::{LazyLock, Mutex},
     time::Duration,
 };
-use tauri::{async_runtime::JoinHandle, Manager};
+use tauri::{async_runtime::JoinHandle, Emitter, Manager};
 use tokio::time;
 
 use crate::save_data::SaveData;
@@ -72,20 +72,28 @@ pub fn initiate_timer(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult
 }
 #[tauri::command]
 #[specta::specta]
-pub fn pause_timer() -> TAResult<()> {
+pub fn pause_timer(app: tauri::AppHandle) -> TAResult<()> {
     let Ok(mut is_paused) = IS_PAUSED.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire lock").into());
     };
     *is_paused = true;
+
+    app.emit("update-is-paused", *is_paused)
+        .map_err(|e| anyhow::anyhow!(e))?;
+
     Ok(())
 }
 #[tauri::command]
 #[specta::specta]
-pub fn resume_timer() -> TAResult<()> {
+pub fn resume_timer(app: tauri::AppHandle) -> TAResult<()> {
     let Ok(mut is_paused) = IS_PAUSED.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire lock").into());
     };
     *is_paused = false;
+
+    app.emit("update-is-paused", *is_paused)
+        .map_err(|e| anyhow::anyhow!(e))?;
+
     Ok(())
 }
 #[tauri::command]
