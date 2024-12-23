@@ -1,6 +1,7 @@
 use anyhow_tauri::TAResult;
 use chrono::{serde::ts_seconds_option, DateTime, Utc};
 use std::{
+    collections::VecDeque,
     fs::{create_dir_all, File, OpenOptions},
     io::BufReader,
     path::Path,
@@ -69,7 +70,43 @@ pub(crate) struct Project {
     pub current_elapsed_time: i32,
     pub completed: bool,
     #[serde(rename = "todoList")]
-    pub todo_list: Vec<Todo>,
+    pub todo_list: TodoList,
+}
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type, Default)]
+pub(crate) struct TodoList {
+    pub checked_todos: Vec<Todo>,
+    pub unchecked_todos: VecDeque<Todo>,
+}
+impl TodoList {
+    pub fn add_todo(&mut self) {
+        let todo = Todo {
+            id: uuid::Uuid::now_v7(),
+            title: "新規タスク".to_string(),
+            lap_time: None,
+            elapsed_time: None,
+            branch_name: None,
+            sub_todo_list: TodoList::default(),
+        };
+        self.unchecked_todos.push_back(todo);
+    }
+    pub fn remove_todo(&mut self) {
+        self.unchecked_todos.pop_back();
+    }
+    pub fn go_to_next_todo(&mut self, parent_todo_id: Option<uuid::Uuid>) -> TodoList {
+        if parent_todo_id.is_some() {
+            let sub_todo_list = &mut self
+                .unchecked_todos
+                .front_mut()
+                .expect("parent_todo_id not found")
+                .sub_todo_list;
+            if let Some(todo) = sub_todo_list.unchecked_todos.pop_front() {
+                sub_todo_list.checked_todos.push(todo);
+            }
+        } else if let Some(todo) = self.unchecked_todos.pop_front() {
+            self.checked_todos.push(todo);
+        }
+        self.clone()
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
@@ -80,8 +117,8 @@ pub(crate) struct Todo {
     pub lap_time: Option<i32>,
     #[serde(rename = "elapsedTime")]
     pub elapsed_time: Option<i32>,
-    pub checked: bool,
-    pub checkable: bool,
     #[serde(rename = "branchName")]
     pub branch_name: Option<String>,
+    #[serde(rename = "subTodoList")]
+    pub sub_todo_list: TodoList,
 }

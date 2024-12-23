@@ -1,9 +1,13 @@
 [package]
 name = "rta-todo"
-version = "0.2.2"
+version = "0.3.0-beta.1"
 description = "An app to complete TODOs with RTA"
 authors = ["gohan5858"]
 edition = "2021"
+
+[lib]
+name = "rta_todo_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

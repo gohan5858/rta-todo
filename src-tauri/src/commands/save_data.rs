@@ -1,6 +1,6 @@
-use crate::save_data::{Project, SaveData, Todo};
+use crate::save_data::{Project, SaveData, TodoList};
 use anyhow_tauri::TAResult;
-use std::{collections::VecDeque, path::Path};
+use std::path::Path;
 use tauri::{Emitter, Manager};
 
 #[tauri::command]
@@ -163,7 +163,7 @@ pub fn add_project(app: tauri::AppHandle, title: String, deadline: Option<String
         deadline,
         current_elapsed_time: 0,
         completed: false,
-        todo_list: Vec::new(),
+        todo_list: TodoList::default(),
     });
     SaveData::save(save_data, Path::new(&path))?;
     Ok(())
@@ -206,46 +206,7 @@ pub fn remove_project(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult
 
 #[tauri::command]
 #[specta::specta]
-pub fn add_todo(
-    app: tauri::AppHandle,
-    project_id: uuid::Uuid,
-    title: String,
-) -> TAResult<(Vec<Todo>, Vec<Todo>)> {
-    let path = app
-        .path()
-        .app_data_dir()
-        .map_err(|e| anyhow::anyhow!(e.to_string()))?
-        .into_os_string()
-        .into_string()
-        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
-    let mut save_data = SaveData::load(Path::new(&path))?;
-    let project = save_data
-        .projects
-        .iter_mut()
-        .find(|p| p.id == project_id)
-        .ok_or(anyhow::anyhow!("Failed to find project"))?;
-    let new_todo = Todo {
-        id: uuid::Uuid::now_v7(),
-        title,
-        lap_time: None,
-        elapsed_time: None,
-        checked: false,
-        checkable: project.todo_list.len() == 0 || project.todo_list.iter().all(|t| !t.checkable),
-        branch_name: None,
-    };
-    project.todo_list.push(new_todo);
-    let (unchecked_todo_list, checked_todo_list): (Vec<Todo>, Vec<Todo>) = project
-        .todo_list
-        .clone()
-        .into_iter()
-        .partition(|t| !t.checked);
-    SaveData::save(save_data, Path::new(&path))?;
-    Ok((unchecked_todo_list, checked_todo_list))
-}
-
-#[tauri::command]
-#[specta::specta]
-pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<Vec<Todo>> {
+pub fn add_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<TodoList> {
     let path = app
         .path()
         .app_data_dir()
@@ -260,29 +221,45 @@ pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<Ve
         .find(|p| p.id == project_id)
         .ok_or(anyhow::anyhow!("Failed to find project"))?;
 
-    if let Some(last_todo) = project.todo_list.last() {
-        (!last_todo.checkable && !last_todo.checked).then(|| project.todo_list.pop());
-    }
-
-    let unchecked_todo_list: Vec<Todo> = project
-        .todo_list
-        .clone()
-        .into_iter()
-        .filter(|t| !t.checked)
-        .collect();
+    project.todo_list.add_todo();
+    let updated_todo_list = project.todo_list.clone();
 
     SaveData::save(save_data, Path::new(&path))?;
 
-    Ok(unchecked_todo_list)
+    Ok(updated_todo_list)
 }
 
 #[tauri::command]
 #[specta::specta]
-pub fn update_todo_item_title(
+pub fn remove_todo(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<TodoList> {
+    let path = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?
+        .into_os_string()
+        .into_string()
+        .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
+    let mut save_data = SaveData::load(Path::new(&path))?;
+    let project = save_data
+        .projects
+        .iter_mut()
+        .find(|p| p.id == project_id)
+        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+
+    project.todo_list.remove_todo();
+    let updated_todo_list = project.todo_list.clone();
+
+    SaveData::save(save_data, Path::new(&path))?;
+
+    Ok(updated_todo_list)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn update_todo_list(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,
-    checked_todo_list: Vec<Todo>,
-    unchecked_todo_list: Vec<Todo>,
+    todo_list: TodoList,
 ) -> TAResult<()> {
     let path = app
         .path()
@@ -299,10 +276,7 @@ pub fn update_todo_item_title(
         .find(|p| p.id == project_id)
         .ok_or(anyhow::anyhow!("Failed to find project"))?;
 
-    target_project.todo_list = checked_todo_list
-        .into_iter()
-        .chain(unchecked_todo_list)
-        .collect();
+    target_project.todo_list = todo_list;
 
     SaveData::save(save_data, Path::new(&path))?;
 
@@ -314,8 +288,8 @@ pub fn update_todo_item_title(
 pub fn go_to_next_todo(
     app: tauri::AppHandle,
     project_id: uuid::Uuid,
-    lap_time: i32,
-) -> TAResult<(Vec<Todo>, Vec<Todo>)> {
+    parent_id: Option<uuid::Uuid>,
+) -> TAResult<TodoList> {
     let path = app
         .path()
         .app_data_dir()
@@ -325,41 +299,16 @@ pub fn go_to_next_todo(
         .map_err(|_| anyhow::anyhow!("Failed to get path"))?;
     let mut save_data = SaveData::load(Path::new(&path))?;
 
-    let target_project = save_data
-        .projects
-        .iter_mut()
-        .find(|p| p.id == project_id)
-        .ok_or(anyhow::anyhow!("Failed to find project"))?;
+    let updated_todo_list =
+        if let Some(target_project) = save_data.projects.iter_mut().find(|p| p.id == project_id) {
+            target_project.todo_list.go_to_next_todo(parent_id)
+        } else {
+            return Err(anyhow::anyhow!("Failed to find project").into());
+        };
 
-    let mut todo_list_iter = target_project.todo_list.iter_mut();
-    while let Some(todo) = todo_list_iter.next() {
-        if todo.checked && todo.checkable {
-            todo.checkable = false;
-            todo.lap_time = Some(lap_time);
-            todo.elapsed_time = Some(lap_time / 1000 / 60);
+    SaveData::save(save_data, Path::new(&path))?;
 
-            if let Some(t) = todo_list_iter.next() {
-                t.checkable = true;
-            }
-
-            break;
-        }
-    }
-
-    Ok((
-        target_project
-            .todo_list
-            .iter()
-            .filter(|t| !t.checked)
-            .cloned()
-            .collect(),
-        target_project
-            .todo_list
-            .iter()
-            .filter(|t| t.checked)
-            .cloned()
-            .collect(),
-    ))
+    Ok(updated_todo_list)
 }
 
 #[tauri::command]
