@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { commands } from "@/bindings";
+import { commands, Todo, TodoList } from "@/bindings";
 import RTATimer from "@base/RTATimer.vue";
 import TodoListContainer from "@layout/TodoListContainer.vue";
 import TodoNavbar from "@layout/TodoNavbar.vue";
@@ -36,6 +36,26 @@ const removeTodoItem = async () => {
 const goToNextTodo = async (parentId: string | null) => {
   project.value.todoList = await commands.goToNextTodo(projectId, parentId);
 };
+
+const flattenTodoList = (todoList: TodoList): TodoList => {
+  const flattenTodos = (todos: Todo[]): Todo[] => {
+    return todos.reduce((acc: Todo[], todo: Todo) => {
+      const { subTodoList, ...rest } = todo;
+      acc.push({
+        ...rest,
+        subTodoList: { checked_todos: [], unchecked_todos: [] },
+      });
+      acc.push(...flattenTodos(subTodoList.checked_todos));
+      acc.push(...flattenTodos(subTodoList.unchecked_todos));
+      return acc;
+    }, []);
+  };
+
+  return {
+    checked_todos: flattenTodos(todoList.checked_todos),
+    unchecked_todos: flattenTodos(todoList.unchecked_todos),
+  };
+};
 </script>
 
 <template>
@@ -48,6 +68,16 @@ const goToNextTodo = async (parentId: string | null) => {
         @check-todo="async (parentId) => await goToNextTodo(parentId)"
         @update-todo-list="
           async (todoList) => {
+            // 子タスクをフラット化する
+            todoList.unchecked_todos = todoList.unchecked_todos.map((todo) => {
+              todo.subTodoList = flattenTodoList(todo.subTodoList);
+              return todo;
+            });
+            todoList.checked_todos = todoList.checked_todos.map((todo) => {
+              todo.subTodoList = flattenTodoList(todo.subTodoList);
+              return todo;
+            });
+
             await commands.updateTodoList(projectId, todoList);
             project.todoList = todoList;
           }
