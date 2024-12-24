@@ -4,10 +4,11 @@ use std::{
     sync::{LazyLock, Mutex},
     time::Duration,
 };
-use tauri::{async_runtime::JoinHandle, Emitter, Manager};
+use tauri::{async_runtime::JoinHandle, Manager};
+use tauri_specta::Event;
 use tokio::time;
 
-use crate::save_data::SaveData;
+use crate::{events::timer::UpdaterIsPaused, save_data::SaveData};
 
 pub static IS_PAUSED: LazyLock<Mutex<bool>> = LazyLock::new(|| Mutex::new(false));
 pub static CURRENT_TIME: LazyLock<Mutex<u32>> = LazyLock::new(|| Mutex::new(0));
@@ -78,7 +79,8 @@ pub fn pause_timer(app: tauri::AppHandle) -> TAResult<()> {
     };
     *is_paused = true;
 
-    app.emit("update-is-paused", *is_paused)
+    UpdaterIsPaused(*is_paused)
+        .emit(&app)
         .map_err(|e| anyhow::anyhow!(e))?;
 
     Ok(())
@@ -91,7 +93,8 @@ pub fn resume_timer(app: tauri::AppHandle) -> TAResult<()> {
     };
     *is_paused = false;
 
-    app.emit("update-is-paused", *is_paused)
+    UpdaterIsPaused(*is_paused)
+        .emit(&app)
         .map_err(|e| anyhow::anyhow!(e))?;
 
     Ok(())
