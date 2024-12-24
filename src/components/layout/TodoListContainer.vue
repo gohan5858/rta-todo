@@ -15,6 +15,8 @@ const props = defineProps<{
   maxNestLevel: number;
 }>();
 
+const isDragging = defineModel<boolean>();
+
 const isPaused = ref(true);
 onMounted(() => {
   events.updaterIsPaused.listen((events) => {
@@ -24,9 +26,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-1">
     <div
-      class="flex flex-col gap-5"
+      class="flex flex-col gap-1"
       v-for="checkedTodo in props.todoList.checked_todos"
     >
       <TodoListItem
@@ -35,26 +37,31 @@ onMounted(() => {
         :checkable="false"
         :checked="true"
       />
-      <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
-        <TodoListItem
-          class="pl-4 pr-7"
-          :todo-list-item="subTodo"
-          :checkable="false"
-          :checked="true"
-        />
-      </div>
-      <div v-for="subTodo in checkedTodo.subTodoList.unchecked_todos">
-        <TodoListItem
-          class="pl-4 pr-7"
-          :todo-list-item="subTodo"
-          :checkable="false"
-          :checked="false"
-        />
+      <div class="p-2">
+        <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
+          <TodoListItem
+            class="pl-4 pr-7"
+            :todo-list-item="subTodo"
+            :checkable="false"
+            :checked="true"
+          />
+        </div>
+        <div v-for="subTodo in checkedTodo.subTodoList.unchecked_todos">
+          <TodoListItem
+            class="pl-4 pr-7"
+            :todo-list-item="subTodo"
+            :checkable="false"
+            :checked="false"
+          />
+        </div>
       </div>
     </div>
     <VueDraggable
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-1"
+      :class="isDragging ? 'min-h-7 outline outline-1' : ''"
       :model-value="props.todoList.unchecked_todos"
+      @start="() => (isDragging = true)"
+      @end="() => (isDragging = false)"
       @update:model-value="
         (unchecked_todos: Todo[]) => {
           props.todoList.unchecked_todos = unchecked_todos;
@@ -68,7 +75,7 @@ onMounted(() => {
       <div
         v-for="(uncheckedTodo, index) in props.todoList.unchecked_todos"
         :key="uncheckedTodo.id"
-        class="flex flex-col gap-5"
+        class="flex flex-col"
       >
         <div class="flex flex-row gap-1">
           <TodoListItem
@@ -99,8 +106,9 @@ onMounted(() => {
           </div>
         </div>
         <TodoListContainer
-          class="pl-4"
+          class="p-2 pl-4"
           v-if="props.maxNestLevel > 0"
+          v-model="isDragging"
           :todo-list="uncheckedTodo.subTodoList"
           :max-nest-level="props.maxNestLevel - 1"
           @check-todo="async (parentId) => emit('checkTodo', parentId)"
