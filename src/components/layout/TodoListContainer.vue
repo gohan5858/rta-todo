@@ -37,7 +37,7 @@ onMounted(() => {
         :checkable="false"
         :checked="true"
       />
-      <div class="p-2">
+      <div class="py-2">
         <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
           <TodoListItem
             class="pl-4 pr-7"
@@ -110,7 +110,7 @@ onMounted(() => {
           </div>
         </div>
         <TodoListContainer
-          class="p-2 pl-4"
+          class="py-2 pl-4"
           v-if="props.maxNestLevel > 0"
           v-model="isDragging"
           :todo-list="uncheckedTodo.subTodoList"
