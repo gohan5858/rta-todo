@@ -7,7 +7,6 @@ use commands::{save_data::*, timer::*};
 use events::timer::UpdaterIsPaused;
 use specta::{function::FunctionResult, Type};
 use specta_typescript::Typescript;
-use tauri_plugin_updater::UpdaterExt;
 use tauri_specta::{collect_commands, collect_events, Builder};
 
 // NOTE: TResultがFunctionResultを実装しておらず、spectaが型を生成できていなかったため以下を追加
@@ -59,37 +58,11 @@ pub fn run() {
         .setup(move |app| {
             builder.mount_events(app);
 
-            let handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move {
-                update(handle).await.unwrap();
-            });
             Ok(())
         })
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_os::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-async fn update(app: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
-    if let Some(update) = app.updater()?.check().await? {
-        let mut downloaded = 0;
-
-        // alternatively we could also call update.download() and update.install() separately
-        update
-            .download_and_install(
-                |chunk_length, content_length| {
-                    downloaded += chunk_length;
-                    println!("downloaded {downloaded} from {content_length:?}");
-                },
-                || {
-                    println!("download finished");
-                },
-            )
-            .await?;
-
-        println!("update installed");
-        app.restart();
-    }
-
-    Ok(())
 }
