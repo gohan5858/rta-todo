@@ -5,14 +5,24 @@ use std::{
     time::Duration,
 };
 use tauri::{async_runtime::JoinHandle, Manager};
+use tauri_specta::Event;
 use tokio::time;
 
-use crate::save_data::SaveData;
+use crate::{events::timer::UpdaterIsPaused, save_data::SaveData};
 
 pub static IS_PAUSED: LazyLock<Mutex<bool>> = LazyLock::new(|| Mutex::new(false));
 pub static CURRENT_TIME: LazyLock<Mutex<u32>> = LazyLock::new(|| Mutex::new(0));
 static CURRENT_TIMER: LazyLock<Mutex<Option<JoinHandle<TAResult<()>>>>> =
     LazyLock::new(|| Mutex::new(None));
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_is_paused() -> TAResult<bool> {
+    let Ok(is_paused) = IS_PAUSED.lock() else {
+        return Err(anyhow::anyhow!("Failed to acquire lock").into());
+    };
+    Ok(*is_paused)
+}
 
 #[tauri::command]
 #[specta::specta]
@@ -72,20 +82,30 @@ pub fn initiate_timer(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult
 }
 #[tauri::command]
 #[specta::specta]
-pub fn pause_timer() -> TAResult<()> {
+pub fn pause_timer(app: tauri::AppHandle) -> TAResult<()> {
     let Ok(mut is_paused) = IS_PAUSED.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire lock").into());
     };
     *is_paused = true;
+
+    UpdaterIsPaused(*is_paused)
+        .emit(&app)
+        .map_err(|e| anyhow::anyhow!(e))?;
+
     Ok(())
 }
 #[tauri::command]
 #[specta::specta]
-pub fn resume_timer() -> TAResult<()> {
+pub fn resume_timer(app: tauri::AppHandle) -> TAResult<()> {
     let Ok(mut is_paused) = IS_PAUSED.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire lock").into());
     };
     *is_paused = false;
+
+    UpdaterIsPaused(*is_paused)
+        .emit(&app)
+        .map_err(|e| anyhow::anyhow!(e))?;
+
     Ok(())
 }
 #[tauri::command]

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Todo, TodoList } from "@/bindings";
+import { commands, events, Todo, TodoList } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
 import { PhDotsSixVertical } from "@phosphor-icons/vue";
+import { onMounted, ref } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 const emit = defineEmits<{
@@ -9,16 +10,31 @@ const emit = defineEmits<{
   updateTodoList: [todoList: TodoList];
 }>();
 
-const props = defineProps<{
-  todoList: TodoList;
-  maxNestLevel: number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    todoList: TodoList;
+    maxNestLevel: number;
+    parentCheckable: boolean;
+  }>(),
+  {
+    parentCheckable: true,
+  },
+);
+
+const isDragging = defineModel<boolean>();
+
+const isPaused = ref(await commands.getIsPaused());
+onMounted(() => {
+  events.updaterIsPaused.listen((events) => {
+    isPaused.value = events.payload;
+  });
+});
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-1">
     <div
-      class="flex flex-col gap-5"
+      class="flex flex-col gap-1"
       v-for="checkedTodo in props.todoList.checked_todos"
     >
       <TodoListItem
@@ -27,26 +43,35 @@ const props = defineProps<{
         :checkable="false"
         :checked="true"
       />
-      <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
-        <TodoListItem
-          class="pl-4 pr-7"
-          :todo-list-item="subTodo"
-          :checkable="false"
-          :checked="true"
-        />
-      </div>
-      <div v-for="subTodo in checkedTodo.subTodoList.unchecked_todos">
-        <TodoListItem
-          class="pl-4 pr-7"
-          :todo-list-item="subTodo"
-          :checkable="false"
-          :checked="false"
-        />
+      <div class="py-2">
+        <div v-for="subTodo in checkedTodo.subTodoList.checked_todos">
+          <TodoListItem
+            class="pl-4 pr-7"
+            :todo-list-item="subTodo"
+            :checkable="false"
+            :checked="true"
+          />
+        </div>
+        <div v-for="subTodo in checkedTodo.subTodoList.unchecked_todos">
+          <TodoListItem
+            class="pl-4 pr-7"
+            :todo-list-item="subTodo"
+            :checkable="false"
+            :checked="false"
+          />
+        </div>
       </div>
     </div>
     <VueDraggable
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-1"
+      :class="
+        isDragging
+          ? 'min-h-7 rounded-sm outline-dashed outline-1 outline-gray-400'
+          : ''
+      "
       :model-value="props.todoList.unchecked_todos"
+      @start="() => (isDragging = true)"
+      @end="() => (isDragging = false)"
       @update:model-value="
         (unchecked_todos: Todo[]) => {
           props.todoList.unchecked_todos = unchecked_todos;
@@ -60,13 +85,13 @@ const props = defineProps<{
       <div
         v-for="(uncheckedTodo, index) in props.todoList.unchecked_todos"
         :key="uncheckedTodo.id"
-        class="flex flex-col gap-5"
+        class="flex flex-col"
       >
         <div class="flex flex-row gap-1">
           <TodoListItem
             class="flex-grow"
             :todo-list-item="uncheckedTodo"
-            :checkable="index === 0"
+            :checkable="!isPaused && index === 0 && props.parentCheckable"
             :checked="false"
             @check-todo="
               () =>
@@ -91,10 +116,12 @@ const props = defineProps<{
           </div>
         </div>
         <TodoListContainer
-          class="pl-4"
+          class="py-2 pl-4"
           v-if="props.maxNestLevel > 0"
+          v-model="isDragging"
           :todo-list="uncheckedTodo.subTodoList"
           :max-nest-level="props.maxNestLevel - 1"
+          :parentCheckable="!isPaused && index === 0"
           @check-todo="async (parentId) => emit('checkTodo', parentId)"
           @update-todo-list="
             (todoList: TodoList) => {

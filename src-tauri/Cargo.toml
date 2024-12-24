@@ -1,6 +1,6 @@
 [package]
 name = "rta-todo"
-version = "0.3.2"
+version = "0.4.0"
 description = "An app to complete TODOs with RTA"
 authors = ["gohan5858"]
 edition = "2021"

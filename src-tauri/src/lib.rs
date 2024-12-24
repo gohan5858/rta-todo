@@ -1,12 +1,14 @@
 mod commands;
+mod events;
 mod save_data;
 
 use anyhow_tauri::TAResult;
 use commands::{save_data::*, timer::*};
+use events::timer::UpdaterIsPaused;
 use specta::{function::FunctionResult, Type};
 use specta_typescript::Typescript;
 use tauri_plugin_updater::UpdaterExt;
-use tauri_specta::{collect_commands, Builder};
+use tauri_specta::{collect_commands, collect_events, Builder};
 
 // NOTE: TResultがFunctionResultを実装しておらず、spectaが型を生成できていなかったため以下を追加
 pub enum SpectaFunctionResultMarker {}
@@ -19,8 +21,9 @@ impl<T: Type> FunctionResult<SpectaFunctionResultMarker> for TAResult<T> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = Builder::<tauri::Wry>::new()
-        // Then register them (separated by a comma)
+        .events(collect_events![UpdaterIsPaused])
         .commands(collect_commands![
+            get_is_paused,
             initiate_timer,
             pause_timer,
             resume_timer,
@@ -52,7 +55,10 @@ pub fn run() {
         .expect("Failed to export typescript bindings");
 
     tauri::Builder::default()
-        .setup(|app| {
+        .invoke_handler(builder.invoke_handler())
+        .setup(move |app| {
+            builder.mount_events(app);
+
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 update(handle).await.unwrap();
@@ -60,7 +66,6 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .invoke_handler(builder.invoke_handler())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
