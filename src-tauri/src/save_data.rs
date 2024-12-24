@@ -5,9 +5,12 @@ use std::{
     fs::{create_dir_all, File, OpenOptions},
     io::BufReader,
     path::Path,
+    sync::{LazyLock, Mutex},
 };
 
 use crate::get_current_time;
+
+pub static LAST_LAP_TIME: LazyLock<Mutex<u32>> = LazyLock::new(|| Mutex::new(0));
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, specta::Type)]
 pub struct SaveData {
@@ -103,35 +106,29 @@ impl TodoList {
                 .sub_todo_list;
             if let Some(mut todo) = sub_todo_list.unchecked_todos.pop_front() {
                 todo.lap_time = match get_current_time() {
-                    Ok(time) => Some(time as i32),
+                    Ok(time) => {
+                        if let Ok(mut last_lap_time) = LAST_LAP_TIME.lock() {
+                            todo.elapsed_time = Some(((time - *last_lap_time) / 1000 / 60) as i32);
+                            *last_lap_time = time;
+                        }
+                        Some(time as i32)
+                    }
                     Err(_) => None,
                 };
-
-                if let Some(before_todo) = sub_todo_list.checked_todos.last() {
-                    todo.elapsed_time = Some(
-                        (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0))
-                            / 1000
-                            / 60,
-                    );
-                } else {
-                    todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
-                }
 
                 sub_todo_list.checked_todos.push(todo);
             }
         } else if let Some(mut todo) = self.unchecked_todos.pop_front() {
             todo.lap_time = match get_current_time() {
-                Ok(time) => Some(time as i32),
+                Ok(time) => {
+                    if let Ok(mut last_lap_time) = LAST_LAP_TIME.lock() {
+                        todo.elapsed_time = Some(((time - *last_lap_time) / 1000 / 60) as i32);
+                        *last_lap_time = time;
+                    }
+                    Some(time as i32)
+                }
                 Err(_) => None,
             };
-
-            if let Some(before_todo) = self.checked_todos.last() {
-                todo.elapsed_time = Some(
-                    (todo.lap_time.unwrap_or(0) - before_todo.lap_time.unwrap_or(0)) / 1000 / 60,
-                );
-            } else {
-                todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
-            }
 
             // 子タスクを全て完了にする
             todo.sub_todo_list.checked_todos =
