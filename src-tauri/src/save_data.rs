@@ -133,6 +133,10 @@ impl TodoList {
                 todo.elapsed_time = Some(todo.lap_time.unwrap_or(0) / 1000 / 60)
             }
 
+            // 子タスクを全て完了にする
+            todo.sub_todo_list.checked_todos =
+                todo.sub_todo_list.unchecked_todos.drain(..).collect();
+
             self.checked_todos.push(todo);
         }
         self.clone()
