@@ -17,6 +17,15 @@ static CURRENT_TIMER: LazyLock<Mutex<Option<JoinHandle<TAResult<()>>>>> =
 
 #[tauri::command]
 #[specta::specta]
+pub fn get_is_paused() -> TAResult<bool> {
+    let Ok(is_paused) = IS_PAUSED.lock() else {
+        return Err(anyhow::anyhow!("Failed to acquire lock").into());
+    };
+    Ok(*is_paused)
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn initiate_timer(app: tauri::AppHandle, project_id: uuid::Uuid) -> TAResult<u32> {
     let Ok(mut current_timer) = CURRENT_TIMER.lock() else {
         return Err(anyhow::anyhow!("Failed to acquire current_time lock").into());

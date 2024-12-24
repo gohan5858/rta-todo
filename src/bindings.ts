@@ -6,6 +6,9 @@
 
 
 export const commands = {
+async getIsPaused() : Promise<boolean> {
+    return await TAURI_INVOKE("get_is_paused");
+},
 async initiateTimer(projectId: string) : Promise<number> {
     return await TAURI_INVOKE("initiate_timer", { projectId });
 },
