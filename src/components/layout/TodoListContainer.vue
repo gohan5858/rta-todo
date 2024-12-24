@@ -58,7 +58,11 @@ onMounted(() => {
     </div>
     <VueDraggable
       class="flex flex-col gap-1"
-      :class="isDragging ? 'min-h-7 outline outline-1' : ''"
+      :class="
+        isDragging
+          ? 'min-h-7 rounded-sm outline-dashed outline-1 outline-gray-400'
+          : ''
+      "
       :model-value="props.todoList.unchecked_todos"
       @start="() => (isDragging = true)"
       @end="() => (isDragging = false)"
