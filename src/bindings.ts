@@ -74,6 +74,11 @@ async resetCurrentElapsedTime() : Promise<null> {
 /** user-defined events **/
 
 
+export const events = __makeEvents__<{
+updaterIsPaused: UpdaterIsPaused
+}>({
+updaterIsPaused: "updater-is-paused"
+})
 
 /** user-defined constants **/
 
@@ -85,6 +90,7 @@ export type Project = { id: string; title: string; deadline: string | null; curr
 export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDeadline: boolean; isNotificationExceededGoalLapTime: boolean; projects: Project[] }
 export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; branchName: string | null; subTodoList: TodoList }
 export type TodoList = { checked_todos: Todo[]; unchecked_todos: Todo[] }
+export type UpdaterIsPaused = boolean
 
 /** tauri-specta globals **/
 

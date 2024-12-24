@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Todo, TodoList } from "@/bindings";
+import { events, Todo, TodoList } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
 import { PhDotsSixVertical } from "@phosphor-icons/vue";
+import { onMounted, ref } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 const emit = defineEmits<{
@@ -13,6 +14,13 @@ const props = defineProps<{
   todoList: TodoList;
   maxNestLevel: number;
 }>();
+
+const isPaused = ref(true);
+onMounted(() => {
+  events.updaterIsPaused.listen((events) => {
+    isPaused.value = events.payload;
+  });
+});
 </script>
 
 <template>
@@ -66,7 +74,7 @@ const props = defineProps<{
           <TodoListItem
             class="flex-grow"
             :todo-list-item="uncheckedTodo"
-            :checkable="index === 0"
+            :checkable="!isPaused && index === 0"
             :checked="false"
             @check-todo="
               () =>
