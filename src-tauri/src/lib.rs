@@ -23,6 +23,7 @@ pub fn run() {
     let builder = Builder::<tauri::Wry>::new()
         .events(collect_events![UpdaterIsPaused])
         .commands(collect_commands![
+            get_is_paused,
             initiate_timer,
             pause_timer,
             resume_timer,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { events, Todo, TodoList } from "@/bindings";
+import { commands, events, Todo, TodoList } from "@/bindings";
 import TodoListItem from "@base/TodoListItem.vue";
 import { PhDotsSixVertical } from "@phosphor-icons/vue";
 import { onMounted, ref } from "vue";
@@ -10,14 +10,20 @@ const emit = defineEmits<{
   updateTodoList: [todoList: TodoList];
 }>();
 
-const props = defineProps<{
-  todoList: TodoList;
-  maxNestLevel: number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    todoList: TodoList;
+    maxNestLevel: number;
+    parentCheckable: boolean;
+  }>(),
+  {
+    parentCheckable: true,
+  },
+);
 
 const isDragging = defineModel<boolean>();
 
-const isPaused = ref(true);
+const isPaused = ref(await commands.getIsPaused());
 onMounted(() => {
   events.updaterIsPaused.listen((events) => {
     isPaused.value = events.payload;
@@ -85,7 +91,7 @@ onMounted(() => {
           <TodoListItem
             class="flex-grow"
             :todo-list-item="uncheckedTodo"
-            :checkable="!isPaused && index === 0"
+            :checkable="!isPaused && index === 0 && props.parentCheckable"
             :checked="false"
             @check-todo="
               () =>
@@ -115,6 +121,7 @@ onMounted(() => {
           v-model="isDragging"
           :todo-list="uncheckedTodo.subTodoList"
           :max-nest-level="props.maxNestLevel - 1"
+          :parentCheckable="!isPaused && index === 0"
           @check-todo="async (parentId) => emit('checkTodo', parentId)"
           @update-todo-list="
             (todoList: TodoList) => {
