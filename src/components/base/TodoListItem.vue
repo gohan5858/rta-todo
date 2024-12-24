@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { Todo } from "@/bindings";
-import { listen } from "@tauri-apps/api/event";
-import { onMounted, ref } from "vue";
 
 const props = defineProps<{
   todoListItem: Todo;
@@ -12,13 +10,6 @@ const emit = defineEmits<{
   checkTodo: [];
   updateTitle: [title: string];
 }>();
-
-const isPaused = ref(true);
-onMounted(async () => {
-  listen("update-is-paused", (event: { payload: boolean }) => {
-    isPaused.value = event.payload;
-  });
-});
 </script>
 
 <template>
@@ -28,7 +19,7 @@ onMounted(async () => {
         <input
           type="checkbox"
           class="checkbox-primary checkbox"
-          :disabled="isPaused || !props.checkable"
+          :disabled="!props.checkable"
           :checked="props.checked"
           @change="
             (e) => {
