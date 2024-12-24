@@ -54,7 +54,10 @@ pub fn run() {
         .expect("Failed to export typescript bindings");
 
     tauri::Builder::default()
-        .setup(|app| {
+        .invoke_handler(builder.invoke_handler())
+        .setup(move |app| {
+            builder.mount_events(app);
+
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 update(handle).await.unwrap();
@@ -62,7 +65,6 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .invoke_handler(builder.invoke_handler())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
