@@ -4,10 +4,10 @@ mod save_data;
 
 use anyhow_tauri::TAResult;
 use commands::{save_data::*, timer::*};
-use events::timer::UpdaterIsPaused;
+use events::{timer::UpdaterIsPaused, window::WindowClose};
 use specta::{function::FunctionResult, Type};
 use specta_typescript::Typescript;
-use tauri_specta::{collect_commands, collect_events, Builder};
+use tauri_specta::{collect_commands, collect_events, Builder, Event};
 
 // NOTE: TResultがFunctionResultを実装しておらず、spectaが型を生成できていなかったため以下を追加
 pub enum SpectaFunctionResultMarker {}
@@ -20,7 +20,7 @@ impl<T: Type> FunctionResult<SpectaFunctionResultMarker> for TAResult<T> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = Builder::<tauri::Wry>::new()
-        .events(collect_events![UpdaterIsPaused])
+        .events(collect_events![UpdaterIsPaused, WindowClose])
         .commands(collect_commands![
             get_is_paused,
             initiate_timer,
