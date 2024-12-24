@@ -45,11 +45,16 @@ const emit = defineEmits<{
         />
         <div class="h-1/4 whitespace-nowrap text-base">
           {{
-            (todoListItem.lapTime !== null &&
-              new Date(todoListItem.lapTime).toISOString().substring(11, 22)) ||
-            "--:--:--.--"
+            todoListItem.lapTime !== null
+              ? new Date(todoListItem.lapTime).toISOString().substring(11, 22)
+              : "-"
           }}
-          / {{ todoListItem?.elapsedTime?.toString() || "--" }} 分
+          /
+          {{
+            todoListItem?.elapsedTime !== null
+              ? todoListItem?.elapsedTime?.toString() + "m"
+              : "-"
+          }}
         </div>
       </div>
       <!-- TODO: Git連携ができるようになったら復活させる -->
