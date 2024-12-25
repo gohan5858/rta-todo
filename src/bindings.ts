@@ -71,6 +71,12 @@ async getCurrentElapsedTime(projectId: string) : Promise<number> {
 },
 async resetCurrentElapsedTime() : Promise<null> {
     return await TAURI_INVOKE("reset_current_elapsed_time");
+},
+async getIsCheckedUpdate() : Promise<boolean> {
+    return await TAURI_INVOKE("get_is_checked_update");
+},
+async setIsCheckedUpdate(isUpdateChecked: boolean) : Promise<null> {
+    return await TAURI_INVOKE("set_is_checked_update", { isUpdateChecked });
 }
 }
 
