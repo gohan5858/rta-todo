@@ -71,6 +71,12 @@ async getCurrentElapsedTime(projectId: string) : Promise<number> {
 },
 async resetCurrentElapsedTime() : Promise<null> {
     return await TAURI_INVOKE("reset_current_elapsed_time");
+},
+async getIsCheckedUpdate() : Promise<boolean> {
+    return await TAURI_INVOKE("get_is_checked_update");
+},
+async setIsCheckedUpdate(isUpdateChecked: boolean) : Promise<null> {
+    return await TAURI_INVOKE("set_is_checked_update", { isUpdateChecked });
 }
 }
 
@@ -78,11 +84,9 @@ async resetCurrentElapsedTime() : Promise<null> {
 
 
 export const events = __makeEvents__<{
-updaterIsPaused: UpdaterIsPaused,
-windowClose: WindowClose
+updaterIsPaused: UpdaterIsPaused
 }>({
-updaterIsPaused: "updater-is-paused",
-windowClose: "window-close"
+updaterIsPaused: "updater-is-paused"
 })
 
 /** user-defined constants **/
@@ -96,7 +100,6 @@ export type SaveData = { theme: string; isAutoStart: boolean; isNotificationOfDe
 export type Todo = { id: string; title: string; lapTime: number | null; elapsedTime: number | null; branchName: string | null; subTodoList: TodoList }
 export type TodoList = { checked_todos: Todo[]; unchecked_todos: Todo[] }
 export type UpdaterIsPaused = boolean
-export type WindowClose = null
 
 /** tauri-specta globals **/
 

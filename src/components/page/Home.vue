@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { commands, events, SaveData } from "@/bindings";
+import { commands, SaveData } from "@/bindings";
 import HomeNavbar from "@layout/HomeNavbar.vue";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { check, Update } from "@tauri-apps/plugin-updater";
@@ -20,19 +20,16 @@ const alertPopup = ref<HTMLDialogElement | null>(null);
 
 const updateNotificationDialog = ref<HTMLDialogElement | null>(null);
 
-const isCheckedUpdate = localStorage.getItem("isCheckedUpdate") ?? "false";
+const isCheckedUpdate = await commands.getIsCheckedUpdate();
 let update: Update | null = null;
 
 // 再起動するまでアップデートチェックは行わない
-if (isCheckedUpdate !== "true") {
+if (!isCheckedUpdate) {
   update = await check();
-  localStorage.setItem("isCheckedUpdate", "true");
+  await commands.setIsCheckedUpdate(true);
 }
 
 onMounted(() => {
-  events.windowClose.listen(() => {
-    localStorage.removeItem("isCheckedUpdate");
-  });
   if (update?.available) {
     updateNotificationDialog.value?.showModal();
   }
