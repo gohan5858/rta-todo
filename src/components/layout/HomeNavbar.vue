@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ComingSoonBoard from "@base/ComingSoonBoard.vue";
-import { PhClockCounterClockwise, PhFaders } from "@phosphor-icons/vue";
+import { PhClockCounterClockwise, PhFaders, PhInfo } from "@phosphor-icons/vue";
 
 const displayCompleted = defineModel<boolean>({
   required: true,
@@ -113,6 +113,13 @@ const displayCompleted = defineModel<boolean>({
               <PhClockCounterClockwise /> タイムライン
             </div>
           </RouterLink>
+        </li>
+        <li>
+          <RouterLink :to="{ name: 'about' }">
+            <div class="flex flex-row items-center gap-2 text-lg">
+              <PhInfo /> アプリ情報
+            </div></RouterLink
+          >
         </li>
       </ul>
     </div>
