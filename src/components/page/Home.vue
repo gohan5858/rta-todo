@@ -189,9 +189,12 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
     <dialog class="modal" ref="updateNotificationDialog">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Update Available</h3>
+        <h4 class="text-md font-bold">
+          v{{ update?.currentVersion }} → v{{ update?.version }}
+        </h4>
         <p class="py-4">
           新しいバージョンが公開されています。<br />
-          アプリケーションをアップデートを行いますか？
+          アップデートを行いますか？
         </p>
         <div class="flex flex-row justify-between">
           <button
