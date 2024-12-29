@@ -9,17 +9,26 @@ const updateNotificationDialog = ref<HTMLDialogElement | null>(null);
 const isCheckedUpdate = await commands.getIsCheckedUpdate();
 let update: Update | null = null;
 
-await new Promise((resolve) => setTimeout(resolve, 3000));
+const currentVersion = ref("?");
+const newVersion = ref("?");
+const isUpdating = ref(false);
 
-// 再起動するまでアップデートチェックは行わない
-if (!isCheckedUpdate) {
+const checkUpdate = async () => {
   update = await check();
-}
-
-onMounted(() => {
   if (update?.available) {
+    currentVersion.value = update.currentVersion;
+    newVersion.value = update.version;
     updateNotificationDialog.value?.showModal();
   }
+};
+defineExpose({ checkUpdate });
+
+onMounted(async () => {
+  // 再起動するまでアップデートチェックは行わない
+  if (isCheckedUpdate) {
+    return;
+  }
+  await checkUpdate();
 });
 </script>
 
@@ -28,7 +37,7 @@ onMounted(() => {
     <div class="modal-box">
       <h3 class="text-lg font-bold">Update Available</h3>
       <h4 class="text-md font-bold">
-        v{{ update?.currentVersion }} → v{{ update?.version }}
+        v{{ currentVersion }} → v{{ newVersion }}
       </h4>
       <p class="py-4">
         新しいバージョンが公開されています。<br />
@@ -36,6 +45,7 @@ onMounted(() => {
       </p>
       <div class="flex flex-row justify-between">
         <button
+          :disabled="isUpdating"
           class="btn btn-info"
           @click="
             async () => {
@@ -47,18 +57,27 @@ onMounted(() => {
           後で
         </button>
         <button
+          :disabled="isUpdating"
           class="btn btn-warning"
           @click="
             async () => {
+              isUpdating = true;
               await update?.downloadAndInstall();
               await commands.setIsCheckedUpdate(true);
               await relaunch();
+              isUpdating = false;
             }
           "
         >
-          今すぐ更新
+          更新して再起動
         </button>
       </div>
+    </div>
+    <div
+      v-if="isUpdating"
+      class="absolute left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-sm"
+    >
+      <span class="loading loading-dots loading-md" />
     </div>
   </dialog>
 </template>
