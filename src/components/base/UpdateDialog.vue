@@ -19,7 +19,9 @@ const checkUpdate = async () => {
     currentVersion.value = update.currentVersion;
     newVersion.value = update.version;
     updateNotificationDialog.value?.showModal();
+    return true;
   }
+  return false;
 };
 defineExpose({ checkUpdate });
 
