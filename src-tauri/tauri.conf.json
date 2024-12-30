@@ -18,7 +18,6 @@
     "createUpdaterArtifacts": true
   },
   "productName": "RTA Todo",
-  "mainBinaryName": "rta-todo",
   "version": "0.4.0",
   "identifier": "com.gohan.rta-todo",
   "plugins": {
