@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { commands, SaveData } from "@/bindings";
+import UpdateDialog from "@base/UpdateDialog.vue";
 import HomeNavbar from "@layout/HomeNavbar.vue";
-import { relaunch } from "@tauri-apps/plugin-process";
-import { check, Update } from "@tauri-apps/plugin-updater";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
 const saveData = ref<SaveData>(await commands.loadData());
 const displayCompleted = ref(false);
@@ -17,23 +16,6 @@ const projects = computed(() =>
 );
 const newTodoPopup = ref<HTMLDialogElement | null>(null);
 const alertPopup = ref<HTMLDialogElement | null>(null);
-
-const updateNotificationDialog = ref<HTMLDialogElement | null>(null);
-
-const isCheckedUpdate = await commands.getIsCheckedUpdate();
-let update: Update | null = null;
-
-// 再起動するまでアップデートチェックは行わない
-if (!isCheckedUpdate) {
-  update = await check();
-  await commands.setIsCheckedUpdate(true);
-}
-
-onMounted(() => {
-  if (update?.available) {
-    updateNotificationDialog.value?.showModal();
-  }
-});
 
 const title = ref("");
 const now = new Date();
@@ -183,41 +165,16 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
         <button>close</button>
       </form>
     </dialog>
-    <dialog class="modal" ref="updateNotificationDialog">
-      <div class="modal-box">
-        <h3 class="text-lg font-bold">Update Available</h3>
-        <h4 class="text-md font-bold">
-          v{{ update?.currentVersion }} → v{{ update?.version }}
-        </h4>
-        <p class="py-4">
-          新しいバージョンが公開されています。<br />
-          アップデートを行いますか？
-        </p>
-        <div class="flex flex-row justify-between">
-          <button
-            class="btn btn-info"
-            @click="
-              () => {
-                updateNotificationDialog?.close();
-              }
-            "
-          >
-            後で
-          </button>
-          <button
-            class="btn btn-warning"
-            @click="
-              async () => {
-                await update?.downloadAndInstall();
-                await relaunch();
-              }
-            "
-          >
-            今すぐ更新
-          </button>
-        </div>
+    <dialog class="modal" ref="alertPopup">
+      <div class="modal-box text-center">
+        <h3 class="text-center text-lg font-bold text-red-500">入力エラー</h3>
+        <p>タイトルを入力してください。</p>
       </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
     </dialog>
+    <UpdateDialog />
   </HomeNavbar>
 </template>
 
