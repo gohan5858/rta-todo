@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { join } from 'node:path';
 import { defineConfig } from "vite";
@@ -6,7 +7,7 @@ const PACKAGE_ROOT = __dirname;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [vue()],
+  plugins: [tailwindcss(), vue()],
 
   resolve: {
     alias: {

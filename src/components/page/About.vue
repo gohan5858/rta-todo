@@ -66,7 +66,7 @@ onMounted(async () => {
     </dialog>
     <div
       v-if="isCheckingUpdate"
-      class="absolute left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-sm"
+      class="absolute left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-xs"
     >
       <span class="loading loading-dots loading-md" />
     </div>

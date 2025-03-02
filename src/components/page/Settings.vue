@@ -19,7 +19,7 @@ const nextTaskKey = ref(["N"]);
 <template>
   <div class="grid grid-cols-1 grid-rows-[1fr_10fr] gap-2">
     <SettingsNavbar />
-    <ul class="menu overflow-auto">
+    <ul class="menu w-full overflow-auto">
       <li>
         <h2 class="menu-title">一般</h2>
         <ul>

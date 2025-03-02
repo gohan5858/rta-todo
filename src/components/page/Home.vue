@@ -25,9 +25,9 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
 
 <template>
   <HomeNavbar v-model="displayCompleted">
-    <div class="flex flex-grow flex-col gap-5">
+    <div class="flex grow flex-col gap-5">
       <!-- TODO list -->
-      <div class="relative flex-grow">
+      <div class="relative grow">
         <div
           class="absolute flex h-full w-full flex-col items-center overflow-auto"
         >
