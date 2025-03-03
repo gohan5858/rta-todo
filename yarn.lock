@@ -253,7 +253,7 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.28.1.tgz#4dff5c4259ebe6c5b4a8f2c5bc3829b7a8447ff0"
   integrity sha512-ZvK2jBafvttJjoIdKm/Q/Bh7IJ1Ose9IBOwpOXcOvW3ikGTQGmKDgxTC6oCAzW6PynbkKP8+um1du81XJHZ0JA==
 
-"@tailwindcss/node@4.0.9":
+"@tailwindcss/node@4.0.9", "@tailwindcss/node@^4.0.0":
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/@tailwindcss/node/-/node-4.0.9.tgz#27f08681b2cf6197a9c4c0ce0a0cb8dd16b3aaaf"
   integrity sha512-tOJvdI7XfJbARYhxX+0RArAhmuDcczTC46DGCEziqxzzbIaPnfYaIyRT31n4u8lROrsO7Q6u/K9bmQHL2uL1bQ==
@@ -317,7 +317,7 @@
   resolved "https://registry.yarnpkg.com/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.0.9.tgz#91f9429cd2f06090cbd91581155e2828e498c8c8"
   integrity sha512-dpc05mSlqkwVNOUjGu/ZXd5U1XNch1kHFJ4/cHkZFvaW1RzbHmRt24gvM8/HC6IirMxNarzVw4IXVtvrOoZtxA==
 
-"@tailwindcss/oxide@4.0.9":
+"@tailwindcss/oxide@4.0.9", "@tailwindcss/oxide@^4.0.0":
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/@tailwindcss/oxide/-/oxide-4.0.9.tgz#83d69528a0f8df99552a7d9df16c6a591878bbc7"
   integrity sha512-eLizHmXFqHswJONwfqi/WZjtmWZpIalpvMlNhTM99/bkHtUs6IqgI1XQ0/W5eO2HiRQcIlXUogI2ycvKhVLNcA==
@@ -346,15 +346,15 @@
     postcss "^8.4.41"
     tailwindcss "4.0.9"
 
-"@tailwindcss/vite@^4.0.9":
-  version "4.0.9"
-  resolved "https://registry.yarnpkg.com/@tailwindcss/vite/-/vite-4.0.9.tgz#31e707ee7dabecc5a288c77c7504c8454a7add2d"
-  integrity sha512-BIKJO+hwdIsN7V6I7SziMZIVHWWMsV/uCQKYEbeiGRDRld+TkqyRRl9+dQ0MCXbhcVr+D9T/qX2E84kT7V281g==
+"@tailwindcss/vite@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/vite/-/vite-4.0.0.tgz#40360987491d148a0dbd2d9e257dd7150b70e08c"
+  integrity sha512-4uukMiU9gHui8KMPMdWic5SP1O/tmQ1NFSRNrQWmcop5evAVl/LZ6/LuWL3quEiecp2RBcRWwqJrG+mFXlRlew==
   dependencies:
-    "@tailwindcss/node" "4.0.9"
-    "@tailwindcss/oxide" "4.0.9"
+    "@tailwindcss/node" "^4.0.0"
+    "@tailwindcss/oxide" "^4.0.0"
     lightningcss "^1.29.1"
-    tailwindcss "4.0.9"
+    tailwindcss "4.0.0"
 
 "@tauri-apps/api@^2.0.0", "@tauri-apps/api@^2.0.3":
   version "2.0.3"
@@ -899,6 +899,11 @@ source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.2.1.tgz#1ce5650fddd87abc099eda37dcff024c2667ae46"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
+
+tailwindcss@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.0.0.tgz#1f275ed16eb4127cb70bf5e9f53fb8eb7b72be3c"
+  integrity sha512-ULRPI3A+e39T7pSaf1xoi58AqqJxVCLg8F/uM5A3FadUbnyDTgltVnXJvdkTjwCOGA6NazqHVcwPJC5h2vRYVQ==
 
 tailwindcss@4.0.9, tailwindcss@^4.0.9:
   version "4.0.9"
