@@ -85,13 +85,13 @@ const flattenTodoList = (todoList: TodoList): TodoList => {
       />
       <div class="flex flex-row">
         <div
-          class="btn flex-grow bg-orange-400 text-xl text-black hover:bg-orange-500"
+          class="btn grow bg-orange-400 text-xl text-black hover:bg-orange-500"
           @click="addTodoItem"
         >
           +
         </div>
         <div
-          class="btn flex-grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
+          class="btn grow bg-cyan-400 text-xl text-black hover:bg-slate-500"
           @click="removeTodoItem"
         >
           -

@@ -27,7 +27,7 @@ const title = defineModel<string>({ required: true });
         </div>
         <ul
           tabindex="0"
-          class="menu dropdown-content z-[1] w-52 rounded-box p-2 backdrop-blur-sm"
+          class="menu dropdown-content z-1 w-52 rounded-box p-2 backdrop-blur-xs"
         >
           <li>
             <button

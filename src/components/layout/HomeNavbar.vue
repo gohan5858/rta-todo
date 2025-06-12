@@ -35,11 +35,13 @@ const displayCompleted = defineModel<boolean>({
             </svg>
           </label>
         </div>
-        <label class="navbar-center swap">
-          <input type="checkbox" v-model="displayCompleted" />
-          <div class="swap-off text-center text-xl font-bold">未完了</div>
-          <div class="swap-on text-center text-xl font-bold">完了</div>
-        </label>
+        <div class="navbar-center">
+          <label class="swap text-center">
+            <input type="checkbox" v-model="displayCompleted" />
+            <div class="swap-off text-xl font-bold">未完了</div>
+            <div class="swap-on text-xl font-bold">完了</div>
+          </label>
+        </div>
         <div class="navbar-end">
           <button class="btn btn-ghost">
             <svg
@@ -81,7 +83,7 @@ const displayCompleted = defineModel<boolean>({
             </div>
             <ul
               tabindex="0"
-              class="menu dropdown-content z-[1] w-52 rounded-box bg-base-200 p-2 shadow"
+              class="menu dropdown-content rounded-box bg-base-200 z-1 w-52 p-2 shadow-sm"
             >
               <ComingSoonBoard />
             </ul>
@@ -98,7 +100,7 @@ const displayCompleted = defineModel<boolean>({
         aria-label="close sidebar"
         class="drawer-overlay"
       ></label>
-      <ul class="menu min-h-full w-80 bg-base-200 p-4">
+      <ul class="menu bg-base-200 min-h-full w-80 p-4">
         <!-- Sidebar content here -->
         <li>
           <RouterLink :to="{ name: 'settings' }">

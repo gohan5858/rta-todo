@@ -14,7 +14,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex cursor-pointer flex-row items-center gap-3">
-    <div class="flex flex-grow flex-col">
+    <div class="flex grow flex-col">
       <div class="flex flex-row items-center gap-2">
         <input
           type="checkbox"
@@ -34,7 +34,7 @@ const emit = defineEmits<{
         <input
           type="text"
           placeholder="Todo Title"
-          class="input input-sm input-ghost w-2/4 flex-grow"
+          class="input input-sm input-ghost w-2/4 grow"
           :value="props.todoListItem.title"
           @input="
             (e) => {

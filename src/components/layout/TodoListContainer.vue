@@ -66,7 +66,7 @@ onMounted(() => {
       class="flex flex-col gap-1"
       :class="
         isDragging
-          ? 'min-h-7 rounded-sm outline-dashed outline-1 outline-gray-400'
+          ? 'min-h-7 rounded-xs outline-dashed outline-1 outline-gray-400'
           : ''
       "
       :model-value="props.todoList.unchecked_todos"
@@ -89,7 +89,7 @@ onMounted(() => {
       >
         <div class="flex flex-row gap-1">
           <TodoListItem
-            class="flex-grow"
+            class="grow"
             :todo-list-item="uncheckedTodo"
             :checkable="!isPaused && index === 0 && props.parentCheckable"
             :checked="false"
