@@ -115,15 +115,18 @@ const deadline_time = ref(now.toTimeString().split(":").slice(0, 2).join(":"));
               <span class="label-text-alt">任意</span>
             </div>
             <div class="flex flex-row gap-1">
+              <!-- daisyUIのdatepicker風input -->
               <input
                 v-model="deadline_date"
                 type="date"
                 class="input input-bordered w-full"
+                data-theme="light"
               />
               <input
                 v-model="deadline_time"
                 type="time"
                 class="input input-bordered w-full"
+                data-theme="light"
               />
             </div>
           </label>
